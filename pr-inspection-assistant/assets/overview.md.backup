@@ -1,4 +1,4 @@
-# Pull Request Inspection Assistant (PRIA) - OpenAI PR Review Bot for Azure DevOps
+# OpenAI PR Review Bot for Azure DevOps
 
 Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assistant (PRIA) and OpenAI. This bot analyzes code changes, offers suggestions, detects potential bugs, and ensures adherence to coding standards. Streamline code reviews with customizable criteria and natural language feedback, improving code quality and reducing review time.
 
@@ -9,8 +9,6 @@ Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assis
 - **Customizable Review Criteria**: Tailor the bot to specific code quality metrics.
 - **Azure DevOps Integration**: Seamlessly integrates with existing DevOps pipelines.
 - **Natural Language Feedback**: Provides human-readable, actionable feedback.
-
-<img src="ado-ai-comment.jpg" />
 
 ## Use Cases
 
@@ -37,6 +35,7 @@ Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assis
    Create an [Azure DevOps Pipeline](https://learn.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) using the following YAML snippet to set up the PRIA code review task:
 
    ```yaml
+   
    trigger:
      branches:
        exclude:
@@ -61,12 +60,13 @@ Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assis
 
 	Cofigure Azure DevOps [Build Validation](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) to use PRIA Code Review Pipeline created above  as a build validation pipeline.
 
+## Resources
+- [Marketplace Pipeline Extension](https://learn.microsoft.com/en-us/azure/devops/extend/develop/add-build-task?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops)
+- [Publisher Portal](https://marketplace.visualstudio.com/manage/publishers)
+
 ## Build & Publish
 
 1. Install [Prequisites](https://learn.microsoft.com/en-us/azure/devops/extend/develop/add-build-task?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops#prerequisites)
-2. Run `.\pr-inspection-assistant\tsc.cmd` to build the solution
-3. Run `.\tfx extension create --manifest-globs vss-extension.json` to package the solution
-
-### Resources
-- [Marketplace Pipeline Extension](https://learn.microsoft.com/en-us/azure/devops/extend/develop/add-build-task?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops)
-- [Publisher Portal](https://marketplace.visualstudio.com/manage/publishers)
+2. Run `.\pr-inspection-assistant\tsc.cmd` to build the solution`
+3. Run `.tfx extension create --manifest-globs vss-extension.json`
+4. `
