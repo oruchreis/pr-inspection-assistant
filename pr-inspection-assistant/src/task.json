@@ -2,7 +2,7 @@
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
     "id": "d3b07384-d9a7-4f3b-8a1d-6e5f3d2b5c3a",
     "name": "PRIA",
-    "friendlyName": "Pull Request Inspection Assistant",
+    "friendlyName": "PR Inspection Assistant",
     "description": "Complete a Code Review using Open AI",
     "category": "Utility",
     "author": "Eric Wellnitz",

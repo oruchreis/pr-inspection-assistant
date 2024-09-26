@@ -1,8 +1,8 @@
 {
     "manifestVersion": 1,
     "id": "pria",
-    "version": "1.0.3",
-    "name": "Pull Request Inpection Assistant",
+    "version": "1.0.0",
+    "name": "PR Inspection Assistant",
     "publisher": "EricWellnitz",
     "public": true,
     "targets": [
