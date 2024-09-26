@@ -1,6 +1,6 @@
-# OpenAI PR Review Bot for Azure DevOps
+# Pull Request Inspection Assistant (PRIA) - OpenAI PR Review Bot for Azure DevOps
 
-Automate pull request (PR) reviews in Azure DevOps using OpenAI. This bot analyzes code changes, offers suggestions, detects potential bugs, and ensures adherence to coding standards. Streamline code reviews with customizable criteria and natural language feedback, improving code quality and reducing review time.
+Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assistant (PRIA) and OpenAI. This bot analyzes code changes, offers suggestions, detects potential bugs, and ensures adherence to coding standards. Streamline code reviews with customizable criteria and natural language feedback, improving code quality and reducing review time.
 
 ## Key Features
 
@@ -10,25 +10,31 @@ Automate pull request (PR) reviews in Azure DevOps using OpenAI. This bot analyz
 - **Azure DevOps Integration**: Seamlessly integrates with existing DevOps pipelines.
 - **Natural Language Feedback**: Provides human-readable, actionable feedback.
 
+![](./pr-inspection-assistant/assets/ado-ai-comment.jpg)
+
 ## Use Cases
 
 - **Automate Routine PR Tasks**: Speed up the code review process by automating common review tasks.
 - **Improve Code Quality**: Receive consistent, detailed feedback to enhance code quality.
 - **Early Bug Detection**: Help developers understand best practices and identify bugs early in the development cycle.
 
+## Flowchart
+![](./pr-inspection-assistant/assets/flowchart.jpg)
+
 ## Prerequisites
 
 - An [OpenAI API Key](https://platform.openai.com/docs/overview)
+- Build Administrators must be given "Contribute to pull requests" access. Check [this Stack Overflow answer](https://stackoverflow.com/a/57985733) for guidance on setting up permissions.
 
 ## Getting Started
 
-1. **Install the AI Code Review DevOps Extension**
+1. **Install the PRIA DevOps Extension**
 
-   Install the AI Code Review DevOps extension from the Azure DevOps Marketplace.
+   Install the [PRIA](https://marketplace.visualstudio.com/items?itemName=EricWellnitz.pria) DevOps extension from the Azure DevOps Marketplace.
 
-2. **Add the OpenAI Code Review Task to Your Pipeline**
+2. **Create a PRIA Code Review Pipeline**
 
-   Add the following YAML snippet to your pipeline configuration to set up the OpenAI code review task:
+   Create an [Azure DevOps Pipeline](https://learn.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) using the following YAML snippet to set up the PRIA code review task:
 
    ```yaml
    trigger:
@@ -51,12 +57,16 @@ Automate pull request (PR) reviews in Azure DevOps using OpenAI. This bot analyz
          - task: PRIA@1
            inputs:
              api_key: $(OpenAI_ApiKey)
-## FAQ
+2. **Configure your Main Branch for Build Validation**
 
-### Q: What permissions are required for Build Administrators?
+  Cofigure Azure DevOps [Build Validation](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) to use PRIA Code Review Pipeline created above  as a build validation pipeline.
 
-A: Build Administrators must be given "Contribute to pull requests" access. Check [this Stack Overflow answer](https://stackoverflow.com/a/57985733) for guidance on setting up permissions.
+## Build & Publish
 
-## Resources
+1. Install [Prequisites](https://learn.microsoft.com/en-us/azure/devops/extend/develop/add-build-task?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops#prerequisites)
+2. Run `tsc.cmd` from `.\pr-inspection-assistant\src\` to build the solution
+3. Run `tfx extension create --manifest-globs vss-extension.json` from `.\pr-inspection-assistant\` to package the solution
+
+### Resources
 - [Marketplace Pipeline Extension](https://learn.microsoft.com/en-us/azure/devops/extend/develop/add-build-task?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops)
 - [Publisher Portal](https://marketplace.visualstudio.com/manage/publishers)

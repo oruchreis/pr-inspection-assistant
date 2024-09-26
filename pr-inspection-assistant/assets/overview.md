@@ -10,7 +10,7 @@ Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assis
 - **Azure DevOps Integration**: Seamlessly integrates with existing DevOps pipelines.
 - **Natural Language Feedback**: Provides human-readable, actionable feedback.
 
-<img src="ado-ai-comment.jpg" />
+![](ado-ai-comment.jpg)
 
 ## Use Cases
 
@@ -64,8 +64,8 @@ Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assis
 ## Build & Publish
 
 1. Install [Prequisites](https://learn.microsoft.com/en-us/azure/devops/extend/develop/add-build-task?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops#prerequisites)
-2. Run `.\pr-inspection-assistant\tsc.cmd` to build the solution
-3. Run `.\tfx extension create --manifest-globs vss-extension.json` to package the solution
+2. Run `tsc.cmd` from `.\pr-inspection-assistant\src\` to build the solution
+3. Run `tfx extension create --manifest-globs vss-extension.json` from `.\pr-inspection-assistant\` to package the solution
 
 ### Resources
 - [Marketplace Pipeline Extension](https://learn.microsoft.com/en-us/azure/devops/extend/develop/add-build-task?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops)
