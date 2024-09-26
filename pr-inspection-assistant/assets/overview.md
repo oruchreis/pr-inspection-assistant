@@ -10,7 +10,7 @@ Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assis
 - **Azure DevOps Integration**: Seamlessly integrates with existing DevOps pipelines.
 - **Natural Language Feedback**: Provides human-readable, actionable feedback.
 
-![](ado-ai-comment.jpg)
+![AzureDevOps Comment](https://raw.githubusercontent.com/ewellnitz/pr-inspection-assistant/refs/heads/main/pr-inspection-assistant/assets/ado-ai-comment.jpg)
 
 ## Use Cases
 
@@ -19,7 +19,7 @@ Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assis
 - **Early Bug Detection**: Help developers understand best practices and identify bugs early in the development cycle.
 
 ## Flowchart
-![](flowchart.jpg)
+![Flowchart](https://raw.githubusercontent.com/ewellnitz/pr-inspection-assistant/refs/heads/main/pr-inspection-assistant/assets/flowchart.jpg)
 
 ## Prerequisites
 
