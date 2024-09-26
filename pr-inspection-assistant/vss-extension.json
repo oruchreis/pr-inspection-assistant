@@ -1,0 +1,79 @@
+{
+    "manifestVersion": 1,
+    "id": "aicr",
+    "version": "1.0.3",
+    "name": "AI Code Review",
+    "publisher": "EricWellnitz",
+    "public": true,
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "description": "Automate pull request reviews in Azure DevOps using OpenAI. This bot analyzes code changes, offers suggestions, detects potential bugs, and ensures adherence to coding standards.",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "tags": [
+        "Code Analysis",
+        "Open AI",
+        "Code Quality",
+        "ChatGPT",
+        "Quality Assurance",
+        "Pull Request",
+        "Pipeline",
+        "Code Inspection",
+        "Peer Review",
+        "Code Review",
+        "AI"
+    ],
+    "icons": {
+        "default": "assets/logo.png"
+    },
+    "branding": {
+        "color": "rgb(138, 43, 226)",
+        "theme": "dark"
+    },
+    "links": {
+        "support": {
+            "uri": "https://github.com/a1dancole/openai-code-review/issues/new?assignees=&labels=bug&template=bug_report.md&title=",
+            "version": "1.0.0"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/ewellnitz/ai-code-review"
+    },
+    "screenshots": [
+    ],
+    "content": {
+        "details": {
+            "path": "assets/overview.md"
+        }
+    },
+    "files": [
+        {
+            "path": "src"
+        },
+        {
+            "path": "assets/overview.md",
+            "addressable": true
+        },
+        {
+            "path": "assets/logo.png",
+            "addressable": true
+        }
+    ],
+    "contributions": [
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "src"
+            }
+        }
+    ]
+}
