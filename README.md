@@ -48,7 +48,7 @@ Automate pull request (PR) reviews in Azure DevOps using OpenAI. This bot analyz
        steps:
          - checkout: self
            persistCredentials: true
-         - task: AICodeReview@1
+         - task: PRIA@1
            inputs:
              api_key: $(OpenAI_ApiKey)
 ## FAQ
