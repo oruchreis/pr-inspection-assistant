@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "pria",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "PR Inspection Assistant",
     "publisher": "EricWellnitz",
     "public": true,
@@ -15,8 +15,10 @@
         "Azure Pipelines"
     ],
     "tags": [
+        "PR",
         "Code Analysis",
         "Open AI",
+        "OpenAI",
         "Code Quality",
         "ChatGPT",
         "Quality Assurance",
@@ -36,13 +38,13 @@
     },
     "links": {
         "support": {
-            "uri": "https://github.com/a1dancole/openai-code-review/issues/new?assignees=&labels=bug&template=bug_report.md&title=",
+            "uri": "https://github.com/ewellnitz/pr-inspection-assistant",
             "version": "1.0.0"
         }
     },
     "repository": {
         "type": "git",
-        "uri": "https://github.com/ewellnitz/ai-code-review"
+        "uri": "https://github.com/ewellnitz/pr-inspection-assistant"
     },
     "screenshots": [
     ],
