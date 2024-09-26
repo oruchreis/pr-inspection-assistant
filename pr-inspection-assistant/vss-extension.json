@@ -1,8 +1,8 @@
 {
     "manifestVersion": 1,
-    "id": "aicr",
+    "id": "pria",
     "version": "1.0.3",
-    "name": "AI Code Review",
+    "name": "Pull Request Inpection Assistant",
     "publisher": "EricWellnitz",
     "public": true,
     "targets": [

@@ -1,8 +1,8 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-    "id": "e7b8f8a1-4a5b-4d3e-9b2f-1c3d5e7f8a9b",
-    "name": "AICodeReview",
-    "friendlyName": "AI Code Review",
+    "id": "d3b07384-d9a7-4f3b-8a1d-6e5f3d2b5c3a",
+    "name": "PRIA",
+    "friendlyName": "Pull Request Inspection Assistant",
     "description": "Complete a Code Review using Open AI",
     "category": "Utility",
     "author": "Eric Wellnitz",
@@ -11,7 +11,7 @@
         "Minor": 0,
         "Patch": 0
     },
-    "instanceNameFormat": "Open AI Code Review $(message)",
+    "instanceNameFormat": "PRIA $(message)",
     "inputs": [
         {
             "name": "api_key",
