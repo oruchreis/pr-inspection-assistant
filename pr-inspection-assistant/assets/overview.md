@@ -18,7 +18,7 @@ Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assis
 - **Improve Code Quality**: Receive consistent, detailed feedback to enhance code quality.
 - **Early Bug Detection**: Help developers understand best practices and identify bugs early in the development cycle.
 
-## Flowchart
+## Process
 ![Flowchart](https://raw.githubusercontent.com/ewellnitz/pr-inspection-assistant/refs/heads/main/pr-inspection-assistant/assets/flowchart.jpg)
 
 ## Prerequisites
