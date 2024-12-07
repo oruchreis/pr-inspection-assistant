@@ -4,6 +4,7 @@ import OpenAI from "openai";
 
 export class ChatGPT {
     private readonly systemMessage: string = '';
+    private readonly maxTokens: number = 128000;
 
     constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, additionalPrompts: string[] = []) {
         this.systemMessage = `Your task is to act as a code reviewer of a Pull Request:
@@ -40,7 +41,7 @@ export class ChatGPT {
             | 'gpt-3.5-turbo-0613'
             | 'gpt-3.5-turbo-16k-0613';
 
-        if (!this.doesMessageExceedTokenLimit(diff + this.systemMessage, 4097)) {
+        if (!this.doesMessageExceedTokenLimit(diff + this.systemMessage, this.maxTokens)) {
             let openAi = await this._openAi.chat.completions.create({
                 messages: [
                     {

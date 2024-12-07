@@ -25,7 +25,7 @@ export class Main {
         const filesToExclude = tl.getInput('file_excludes', false);
         const additionalPrompts = tl.getInput('additional_prompts', false)?.split(',')
         
-        this._chatGpt = new ChatGPT(new OpenAI({ apiKey: apiKey }), tl.getBoolInput('bugs', true), tl.getBoolInput('performance', true), tl.getBoolInput('best_practices', true), additionalPrompts);
+        this._chatGpt = new ChatGPT(new OpenAI({ apiKey: apiKey }), tl.getBoolInput('bugs', true), tl.getBoolInput('performance', true), tl.getBoolInput('best_practices', false), additionalPrompts);
         this._repository = new Repository();
         this._pullRequest = new PullRequest();
 
