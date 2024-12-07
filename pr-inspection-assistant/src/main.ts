@@ -24,8 +24,18 @@ export class Main {
         const fileExtensions = tl.getInput('file_extensions', false);
         const filesToExclude = tl.getInput('file_excludes', false);
         const additionalPrompts = tl.getInput('additional_prompts', false)?.split(',')
+        const bugs: boolean = tl.getBoolInput('bugs', true);
+        const performance: boolean = tl.getBoolInput('performance', true);
+        const bestPractices: boolean = tl.getBoolInput('best_practices', false);
+
+        console.info(`file_extensions: ${fileExtensions}`);
+        console.info(`file_excludes: ${filesToExclude}`);
+        console.info(`additional_prompts: ${additionalPrompts}`);
+        console.info(`bugs: ${bugs}`);
+        console.info(`performance: ${performance}`);
+        console.info(`best_practices: ${bestPractices}`);
         
-        this._chatGpt = new ChatGPT(new OpenAI({ apiKey: apiKey }), tl.getBoolInput('bugs', true), tl.getBoolInput('performance', true), tl.getBoolInput('best_practices', false), additionalPrompts);
+        this._chatGpt = new ChatGPT(new OpenAI({ apiKey: apiKey }), bugs, performance, bestPractices, additionalPrompts);
         this._repository = new Repository();
         this._pullRequest = new PullRequest();
 
