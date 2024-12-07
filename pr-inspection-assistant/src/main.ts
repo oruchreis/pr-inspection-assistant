@@ -24,8 +24,8 @@ export class Main {
         const fileExtensions = tl.getInput('file_extensions', false);
         const filesToExclude = tl.getInput('file_excludes', false);
         const additionalPrompts = tl.getInput('additional_prompts', false)?.split(',')
-        const bugs: boolean = tl.getBoolInput('bugs', true);
-        const performance: boolean = tl.getBoolInput('performance', true);
+        const bugs: boolean = tl.getBoolInput('bugs', false);
+        const performance: boolean = tl.getBoolInput('performance', false);
         const bestPractices: boolean = tl.getBoolInput('best_practices', false);
 
         console.info(`file_extensions: ${fileExtensions}`);

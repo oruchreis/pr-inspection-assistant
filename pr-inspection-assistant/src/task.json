@@ -9,7 +9,7 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 9
+        "Patch": 10
     },
     "instanceNameFormat": "PRIA $(message)",
     "inputs": [
@@ -63,7 +63,7 @@
             "name": "best_practices",
             "type": "boolean",
             "label": "Check for missed best practices",
-            "defaultValue": true,
+            "defaultValue": false,
             "helpMarkDown": "Specify whether to include checks for missed best practices during the code review process.\n\n- Set to `true` to perform best practices checks.\n- Set to `false` to skip best practices checks.\n\nEnabling best practices checks helps ensure adherence to coding standards and identifies areas for improvement. Default value is `true`."
         },
         {

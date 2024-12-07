@@ -14,7 +14,7 @@ export class ChatGPT {
         ${checkForBestPractices ? '- Provide details on missed use of best-practices.' : null}
         ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : null}
         - Do not highlight minor issues and nitpicks.
-        - Only provide instructions for improvements 
+        - Only provide instructions for improvements.
         - If you have no instructions respond with NO_COMMENT only, otherwise provide your instructions.
     
         You are provided with the code changes (diffs) in a unidiff format.
@@ -60,7 +60,9 @@ export class ChatGPT {
             let response = openAi.choices;
 
             if (response.length > 0) {
-                return response[0].message.content!;
+                let comment = response[0].message.content!;
+                console.info(`Model: ${comment}`);
+                return comment;
             }
         }
         tl.warning(`Unable to process diff for file ${fileName} as it exceeds token limits.`)
