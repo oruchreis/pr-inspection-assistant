@@ -9,17 +9,17 @@ export class ChatGPT {
     constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, additionalPrompts: string[] = []) {
         this.systemMessage = `Your task is to act as a code reviewer of a Pull Request:
         - Use bullet points if you have multiple comments.
-        ${checkForBugs ? '- If there are any bugs, highlight them.' : null}
-        ${checkForPerformance ? '- If there are major performance problems, highlight them.' : null}
-        ${checkForBestPractices ? '- Provide details on missed use of best-practices.' : null}
-        ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : null}
+        ${checkForBugs ? '- If there are any bugs, highlight them.' : ''}
+        ${checkForPerformance ? '- If there are major performance problems, highlight them.' : ''}
+        ${checkForBestPractices ? '- Provide details on missed use of best-practices.' : ''}
+        ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}
         - Do not highlight minor issues and nitpicks.
         - Only provide instructions for improvements.
         - If you have no instructions respond with NO_COMMENT only, otherwise provide your instructions.
     
         You are provided with the code changes (diffs) in a unidiff format.
         
-        The response should be in markdown format.`
+        The response should be in markdown format, but not wrap it in a markdown fenced codeblock.`
     }
 
     public async PerformCodeReview(diff: string, fileName: string): Promise<string> {
@@ -61,7 +61,7 @@ export class ChatGPT {
 
             if (response.length > 0) {
                 let comment = response[0].message.content!;
-                console.info(`Model: ${comment}`);
+                console.info(`Comment: ${comment}`);
                 return comment;
             }
         }
