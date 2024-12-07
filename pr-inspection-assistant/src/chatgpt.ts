@@ -41,6 +41,8 @@ export class ChatGPT {
             | 'gpt-3.5-turbo-0613'
             | 'gpt-3.5-turbo-16k-0613';
 
+        console.info(`Model: ${model}`);
+        console.info(`System prompt: ${this.systemMessage}`);
         if (!this.doesMessageExceedTokenLimit(diff + this.systemMessage, this.maxTokens)) {
             let openAi = await this._openAi.chat.completions.create({
                 messages: [
@@ -61,13 +63,13 @@ export class ChatGPT {
                 return response[0].message.content!;
             }
         }
-
         tl.warning(`Unable to process diff for file ${fileName} as it exceeds token limits.`)
         return '';
     }
 
     private doesMessageExceedTokenLimit(message: string, tokenLimit: number): boolean {
         let tokens = encode(message);
+        console.info(`Token count: ${tokens.length}`);
         return tokens.length > tokenLimit;
     }
 
