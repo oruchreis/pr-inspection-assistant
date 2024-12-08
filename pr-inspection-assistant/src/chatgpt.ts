@@ -25,7 +25,7 @@ export class ChatGPT {
     public async PerformCodeReview(diff: string, fileName: string): Promise<string> {
 
         let model = tl.getInput('ai_model', true) as | (string & {})
-            | 'o1'
+            | 'o1-preview'
             | 'gpt-4o'
             | 'gpt-4'
             | 'gpt-3.5-turbo';
@@ -37,7 +37,7 @@ export class ChatGPT {
             let openAi = await this._openAi.chat.completions.create({
                 messages: [
                     {
-                        role: model == 'o1' ? 'assistant' : 'system',
+                        role: model == 'o1-preview' ? 'assistant' : 'system',
                         content: this.systemMessage
                     },
                     {
