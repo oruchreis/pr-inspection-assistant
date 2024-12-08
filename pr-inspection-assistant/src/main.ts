@@ -27,6 +27,7 @@ export class Main {
         const bugs: boolean = tl.getBoolInput('bugs', false);
         const performance: boolean = tl.getBoolInput('performance', false);
         const bestPractices: boolean = tl.getBoolInput('best_practices', false);
+        const modifiedLinesOnly: boolean = tl.getBoolInput('modified_lines_only', false);
 
         console.info(`file_extensions: ${fileExtensions}`);
         console.info(`file_excludes: ${filesToExclude}`);
@@ -34,8 +35,9 @@ export class Main {
         console.info(`bugs: ${bugs}`);
         console.info(`performance: ${performance}`);
         console.info(`best_practices: ${bestPractices}`);
+        console.info(`modified_lines_only: ${modifiedLinesOnly}`);
         
-        this._chatGpt = new ChatGPT(new OpenAI({ apiKey: apiKey }), bugs, performance, bestPractices, additionalPrompts);
+        this._chatGpt = new ChatGPT(new OpenAI({ apiKey: apiKey }), bugs, performance, bestPractices, modifiedLinesOnly, additionalPrompts);
         this._repository = new Repository();
         this._pullRequest = new PullRequest();
 

@@ -9,7 +9,7 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 14
+        "Patch": 15
     },
     "instanceNameFormat": "PRIA $(message)",
     "inputs": [
@@ -54,6 +54,13 @@
             "label": "Check for missed best practices",
             "defaultValue": false,
             "helpMarkDown": "Specify whether to include checks for missed best practices during the code review process.\n\n- Set to `true` to perform best practices checks.\n- Set to `false` to skip best practices checks.\n\nEnabling best practices checks helps ensure adherence to coding standards and identifies areas for improvement. Default value is `true`."
+        },
+        {
+            "name": "modified_lines_only",
+            "type": "boolean",
+            "label": "Only check modified lines",
+            "defaultValue": true,
+            "helpMarkDown": "Specify whether to check modified lines only. Default value is `true`."
         },
         {
             "name": "file_extensions",
