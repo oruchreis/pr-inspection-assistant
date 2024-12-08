@@ -9,7 +9,7 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 12
+        "Patch": 13
     },
     "instanceNameFormat": "PRIA $(message)",
     "inputs": [
@@ -25,23 +25,12 @@
             "name": "ai_model",
             "type": "pickList",
             "label": "Open AI API Model",
-            "defaultValue": "gpt-4o",
+            "defaultValue": "o1",
             "options": {
+                "o1": "o1",
                 "gpt-4o": "gpt-4o",
-                "gpt-4-1106-preview": "gpt-4-1106-preview",
-                "gpt-4-vision-preview": "gpt-4-vision-preview",
                 "gpt-4": "gpt-4",
-                "gpt-4-0314": "gpt-4-0314",
-                "gpt-4-0613": "gpt-4-0613",
-                "gpt-4-32k": "gpt-4-32k",
-                "gpt-4-32k-0314": "gpt-4-32k-0314",
-                "gpt-4-32k-0613": "gpt-4-32k-0613",
-                "gpt-3.5-turbo-1106": "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo": "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k": "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0301": "gpt-3.5-turbo-0301",
-                "gpt-3.5-turbo-0613": "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-16k-0613": "gpt-3.5-turbo-16k-0613"
+                "gpt-3.5-turbo": "gpt-3.5-turbo"
             },
             "helpMarkDown": "## OpenAI API Model Configuration\n\n### Description\nChoose the Open AI API model for code analysis. The selected model determines the depth and capabilities of the code review performed by Open AI.\n\n### Options\n- **gpt-4-1106-preview:** Preview version of GPT-4 released on June 11, 202x.\n- **gpt-4-vision-preview:** Preview version of GPT-4 with enhanced vision capabilities.\n- **gpt-4:** Latest stable release of GPT-4.\n- **gpt-4-0314:** GPT-4 version released on March 14, 202x.\n- **gpt-4-0613:** GPT-4 version released on June 13, 202x.\n- **gpt-4-32k:** GPT-4 version with a 32k parameter size.\n- **gpt-4-32k-0314:** GPT-4 version with 32k parameters, released on March 14, 202x.\n- **gpt-4-32k-0613:** GPT-4 version with 32k parameters, released on June 13, 202x.\n- **gpt-3.5-turbo-1106:** Preview version of GPT-3.5 Turbo released on November 6, 202x.\n- **gpt-3.5-turbo:** Latest stable release of GPT-3.5 Turbo.\n- **gpt-3.5-turbo-16k:** GPT-3.5 Turbo version with a 16k parameter size.\n- **gpt-3.5-turbo-0301:** GPT-3.5 Turbo version released on March 1, 202x.\n- **gpt-3.5-turbo-0613:** GPT-3.5 Turbo version released on June 13, 202x.\n- **gpt-3.5-turbo-16k-0613:** GPT-3.5 Turbo version with 16k parameters, released on June 13, 202x.\n\n### Default Value\nThe default Open AI API model is set to **gpt-3.5-turbo**.\n\n Choose the model that best suits your code review requirements."
         },
