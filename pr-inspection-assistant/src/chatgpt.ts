@@ -13,7 +13,7 @@ export class ChatGPT {
         - Do not highlight minor issues and nitpicks.
         - Only provide instructions for improvements.
         - If you have no instructions respond with NO_COMMENT only, otherwise provide your instructions.
-        - The response should be in markdown format, but not wrap it in a markdown fenced codeblock.
+        - The response should be in markdown format, but do not wrap it in a markdown fenced codeblock.
         ${modifiedLinesOnly ? '- Only comment on modified lines.' : ''}
         ${checkForBugs ? '- If there are any bugs, highlight them.' : ''}
         ${checkForPerformance ? '- If there are major performance problems, highlight them.' : ''}
