@@ -9,7 +9,7 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 15
+        "Patch": 16
     },
     "instanceNameFormat": "PRIA $(message)",
     "inputs": [
@@ -27,6 +27,7 @@
             "label": "Open AI API Model",
             "defaultValue": "o1-preview",
             "options": {
+                "o1-mini": "o1-mini",
                 "o1-preview": "o1-preview",
                 "gpt-4o": "gpt-4o",
                 "gpt-4": "gpt-4",
