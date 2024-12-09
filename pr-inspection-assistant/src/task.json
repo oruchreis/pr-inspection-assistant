@@ -25,7 +25,7 @@
             "name": "ai_model",
             "type": "pickList",
             "label": "Open AI API Model",
-            "defaultValue": "o1-preview",
+            "defaultValue": "o1-mini",
             "options": {
                 "o1-mini": "o1-mini",
                 "o1-preview": "o1-preview",
