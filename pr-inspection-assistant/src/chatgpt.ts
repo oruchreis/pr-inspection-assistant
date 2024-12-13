@@ -17,7 +17,7 @@ export class ChatGPT {
         ${modifiedLinesOnly ? '- Only comment on modified lines.' : ''}
         ${checkForBugs ? '- If there are any bugs, highlight them.' : ''}
         ${checkForPerformance ? '- If there are major performance problems, highlight them.' : ''}
-        ${checkForBestPractices ? '- Provide details on missed use of best-practices.' : ''}
+        ${checkForBestPractices ? '- Provide details on missed use of best-practices.' : '- Do not provide comments on best practices.'}
         ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}`
 
         console.info(`System prompt: ${this.systemMessage}`);
