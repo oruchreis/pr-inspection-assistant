@@ -19,6 +19,8 @@ export class ChatGPT {
         ${checkForPerformance ? '- If there are major performance problems, highlight them.' : ''}
         ${checkForBestPractices ? '- Provide details on missed use of best-practices.' : ''}
         ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}`
+
+        console.info(`System prompt: ${this.systemMessage}`);
     }
 
     public async PerformCodeReview(diff: string, fileName: string): Promise<string> {
@@ -32,7 +34,6 @@ export class ChatGPT {
 
         console.info(`Model: ${model}`);
         //console.info(`Diff: ${diff}`);
-        console.info(`System prompt: ${this.systemMessage}`);
         if (!this.doesMessageExceedTokenLimit(diff + this.systemMessage, this.maxTokens)) {
             let openAi = await this._openAi.chat.completions.create({
                 messages: [

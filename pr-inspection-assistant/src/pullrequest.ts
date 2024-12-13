@@ -66,6 +66,7 @@ export class PullRequest {
 
     public async DeleteComment(thread: any, comment: any): Promise<boolean> {
         let removeCommentUrl = `${this._collectionUri}${this._teamProjectId}/_apis/git/repositories/${this._repositoryName}/pullRequests/${this._pullRequestId}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
+        console.info(`Deleting comment: ${removeCommentUrl}`);
 
         let response = await fetch(removeCommentUrl, {
             method: 'DELETE',

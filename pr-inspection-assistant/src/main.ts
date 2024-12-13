@@ -20,6 +20,7 @@ export class Main {
             return;
         }
 
+        // Get the input values
         const apiKey = tl.getInput('api_key', true)!;
         const fileExtensions = tl.getInput('file_extensions', false);
         const filesToExclude = tl.getInput('file_excludes', false);
@@ -41,6 +42,8 @@ export class Main {
         this._repository = new Repository();
         this._pullRequest = new PullRequest();
 
+        //delete comments
+        console.info(`Deleting comments...`);
         await this._pullRequest.DeleteComments();
 
         let filesToReview = await this._repository.GetChangedFiles(fileExtensions, filesToExclude);
