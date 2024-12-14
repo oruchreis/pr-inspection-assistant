@@ -41,11 +41,6 @@ export class Main {
         this._chatGpt = new ChatGPT(new OpenAI({ apiKey: apiKey }), bugs, performance, bestPractices, modifiedLinesOnly, additionalPrompts);
         this._repository = new Repository();
         this._pullRequest = new PullRequest();
-
-        //delete comments
-        //console.info(`Deleting comments...`);
-        //await this._pullRequest.DeleteComments();
-
         let filesToReview = await this._repository.GetChangedFiles(fileExtensions, filesToExclude);
 
         tl.setProgress(0, 'Performing Code Review');
@@ -62,8 +57,11 @@ export class Main {
             // Perform code review with existing comments
             let reviewComment = await this._chatGpt.PerformCodeReview(diff, fileName, existingComments);
 
-            if (reviewComment && reviewComment !== 'NO_COMMENT') {
-                await this._pullRequest.AddComment(fileName, reviewComment);
+            // Add the review comments to the pull request 
+            if (reviewComment && reviewComment.threads) {
+                for (let thread of reviewComment.threads as any[]) {
+                    await this._pullRequest.AddThread(thread);
+                }
             }
 
             console.info(`Completed review of file ${fileName}`)
