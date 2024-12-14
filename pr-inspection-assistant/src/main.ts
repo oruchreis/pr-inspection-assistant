@@ -43,25 +43,32 @@ export class Main {
         this._pullRequest = new PullRequest();
 
         //delete comments
-        console.info(`Deleting comments...`);
-        await this._pullRequest.DeleteComments();
+        //console.info(`Deleting comments...`);
+        //await this._pullRequest.DeleteComments();
 
         let filesToReview = await this._repository.GetChangedFiles(fileExtensions, filesToExclude);
 
         tl.setProgress(0, 'Performing Code Review');
 
         for (let index = 0; index < filesToReview.length; index++) {
-            const fileToReview = filesToReview[index];
-            let diff = await this._repository.GetDiff(fileToReview);
-            let review = await this._chatGpt.PerformCodeReview(diff, fileToReview);
+            let fileName = filesToReview[index];
+            let diff = await this._repository.GetDiff(fileName);
 
-            if(review.indexOf('NO_COMMENT') < 0) {
-                await this._pullRequest.AddComment(fileToReview, review);
+            // Get existing comments for the file
+            let existingComments = await this._pullRequest.GetCommentsForFile(fileName);
+
+            console.info(`existingComments: ${existingComments}`);
+
+            // Perform code review with existing comments
+            let reviewComment = await this._chatGpt.PerformCodeReview(diff, fileName, existingComments);
+
+            if (reviewComment && reviewComment !== 'NO_COMMENT') {
+                await this._pullRequest.AddComment(fileName, reviewComment);
             }
 
-            console.info(`Completed review of file ${fileToReview}`)
+            console.info(`Completed review of file ${fileName}`)
 
-            tl.setProgress((fileToReview.length / 100) * index, 'Performing Code Review');
+            tl.setProgress((fileName.length / 100) * index, 'Performing Code Review');
         }
 
         tl.setResult(tl.TaskResult.Succeeded, "Pull Request reviewed.");

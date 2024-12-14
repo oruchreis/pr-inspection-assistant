@@ -124,4 +124,29 @@ export class PullRequest {
 
         return await commentsResponse.json();
     }
+
+    public async GetCommentsForFile(fileName: string): Promise<string[]> {
+        if (!fileName.startsWith('/')) {
+            fileName = `/${fileName}`;
+        }
+
+        console.info(`File name: ${fileName}`);
+        let collectionName = this._collectionUri.replace('https://', '').replace('http://', '').split('/')[1];
+        let buildServiceName = `${tl.getVariable('SYSTEM.TEAMPROJECT')} Build Service (${collectionName})`;
+
+        const threads = await this.GetThreads();
+        const comments: string[] = [];
+
+        for (let thread of threads as any[]) {
+            console.info(`Comment file name: ${thread.threadContext.filePath}`);
+            if (thread.threadContext && thread.threadContext.filePath === fileName) {
+                const threadComments = await this.GetComments(thread);
+                for (let comment of threadComments.value.filter((comment: any) => comment.author.displayName === buildServiceName) as any[]) {
+                    comments.push(comment.content);
+                }
+            }
+        }
+
+        return comments;
+    }
 }

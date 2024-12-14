@@ -8,7 +8,8 @@ export class ChatGPT {
 
     constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, modifiedLinesOnly: boolean = true, additionalPrompts: string[] = []) {
         this.systemMessage = `Your task is to act as a code reviewer of a Pull Request:
-        - You are provided with the code changes (diffs) in a unidiff format.
+        - You are provided with the code changes (diff) in a unidiff format.
+        - You are provided with existing comments on the file, provide any additional code review comments that are not duplicates.
         - Use bullet points if you have multiple comments.
         - Do not highlight minor issues and nitpicks.
         - Only provide instructions for improvements.
@@ -23,7 +24,7 @@ export class ChatGPT {
         console.info(`System prompt: ${this.systemMessage}`);
     }
 
-    public async PerformCodeReview(diff: string, fileName: string): Promise<string> {
+    public async PerformCodeReview(diff: string, fileName: string, existingComments: string[]): Promise<string> {
 
         let model = tl.getInput('ai_model', true) as | (string & {})
             | 'o1-mini'
@@ -32,9 +33,15 @@ export class ChatGPT {
             | 'gpt-4'
             | 'gpt-3.5-turbo';
 
+        let prompt = `Here is the diff of code changes for the file ${fileName}:\n${diff}\nHere are existing comments for this file:\n`;
+        existingComments.forEach((comment, index) => {
+            prompt += `${index + 1}. ${comment}\n`;
+        });
+
+        
         console.info(`Model: ${model}`);
-        //console.info(`Diff: ${diff}`);
-        if (!this.doesMessageExceedTokenLimit(diff + this.systemMessage, this.maxTokens)) {
+        console.info(`Prompt: ${prompt}`);
+        if (!this.doesMessageExceedTokenLimit(this.systemMessage + prompt, this.maxTokens)) {
             let openAi = await this._openAi.chat.completions.create({
                 messages: [
                     {
@@ -43,7 +50,7 @@ export class ChatGPT {
                     },
                     {
                         role: 'user',
-                        content: diff
+                        content: prompt
                     }
                 ], model: model
             });
