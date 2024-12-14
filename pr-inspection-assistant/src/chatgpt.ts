@@ -7,11 +7,11 @@ export class ChatGPT {
     private readonly maxTokens: number = 128000;
 
     constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, modifiedLinesOnly: boolean = true, additionalPrompts: string[] = []) {
-        this.systemMessage = `Your task is to act as a code reviewer of a Pull Request:
-        - You are provided with the code changes (diff) in a unidiff format.
-        - You are provided with a file (fileName).
-        - You are provided with existing comments (existingComments) on the file, provide any additional code review comments that are not duplicates.
-        - Do not include removed lines (-) when determining the line number. Make sure you represent the line number correctly.
+        this.systemMessage = `Your task is to act as a code reviewer of a pull request within Azure DevOps.
+        - You are provided with the code changes (diff) in a Unified Diff format.
+        - You are provided with a file path (fileName).
+        - You are provided with existing comments (existingComments) on the file, you must provide any additional code review comments that are not duplicates.
+        - When determining 'rightFileStart' and 'rightFileEnd' line numbers, exclude any lines in the diff that start with '-'. Only count lines that are unchanged or added (lines starting with ' ' or '+').
         - Do not highlight minor issues and nitpicks.
         ${modifiedLinesOnly ? '- Only comment on modified lines.' : ''}
         ${checkForBugs ? '- If there are any bugs, highlight them.' : ''}
