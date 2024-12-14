@@ -39,7 +39,6 @@ export class PullRequest {
 
     public async AddComment(fileName: string, comment: string): Promise<boolean> {
 
-        console.info(`Comment added to ${fileName}`);
 
         if (!fileName.startsWith('/')) {
             fileName = `/${fileName}`;
@@ -89,7 +88,6 @@ export class PullRequest {
 
     public async DeleteComment(thread: any, comment: any): Promise<boolean> {
         let removeCommentUrl = `${this._collectionUri}${this._teamProjectId}/_apis/git/repositories/${this._repositoryName}/pullRequests/${this._pullRequestId}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
-        console.info(`Deleting comment: ${removeCommentUrl}`);
 
         let response = await fetch(removeCommentUrl, {
             method: 'DELETE',
@@ -152,8 +150,6 @@ export class PullRequest {
         if (!fileName.startsWith('/')) {
             fileName = `/${fileName}`;
         }
-
-        console.info(`File name: ${fileName}`);
         let collectionName = this._collectionUri.replace('https://', '').replace('http://', '').split('/')[1];
         let buildServiceName = `${tl.getVariable('SYSTEM.TEAMPROJECT')} Build Service (${collectionName})`;
 
@@ -161,7 +157,6 @@ export class PullRequest {
         const comments: string[] = [];
 
         for (let thread of threads as any[]) {
-            console.info(`Comment file name: ${thread.threadContext.filePath}`);
             if (thread.threadContext && thread.threadContext.filePath === fileName) {
                 const threadComments = await this.GetComments(thread);
                 for (let comment of threadComments.value.filter((comment: any) => comment.author.displayName === buildServiceName) as any[]) {

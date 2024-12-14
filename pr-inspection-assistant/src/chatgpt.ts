@@ -9,8 +9,9 @@ export class ChatGPT {
     constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, modifiedLinesOnly: boolean = true, additionalPrompts: string[] = []) {
         this.systemMessage = `Your task is to act as a code reviewer of a Pull Request:
         - You are provided with the code changes (diff) in a unidiff format.
-        - You are provided with existing comments on the file, provide any additional code review comments that are not duplicates.
-        - The response should be JSON with each comment content in markdown format, but do not wrap it in a markdown fenced codeblock.
+        - You are provided with a file (fileName).
+        - You are provided with existing comments (existingComments) on the file, provide any additional code review comments that are not duplicates.
+        - Do not include removed lines (-) when determining the line number. Make sure you represent the line number correctly.
         - Do not highlight minor issues and nitpicks.
         ${modifiedLinesOnly ? '- Only comment on modified lines.' : ''}
         ${checkForBugs ? '- If there are any bugs, highlight them.' : ''}
@@ -18,42 +19,40 @@ export class ChatGPT {
         ${checkForBestPractices ? '- Provide details on missed use of best-practices.' : '- Do not provide comments on best practices.'}
         ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}`;
 
-        this.systemMessage += `\n The response should be in this JSON format:\n
+        this.systemMessage += `The response should be a single JSON object (without fenced codeblock) and it must use this sample JSON format:
         {
-            threads: [
+            "threads": [
                 {
-                    comments: [
+                    "comments": [
                         {
-                            content: comment,
-                            commentType: 2
+                            "content": "put comment here in markdown format without markdown fenced codeblock.",
+                            "commentType": 2
                         }
                     ],
-                    status: 1,
-                    threadContext: {
-                        filePath: fileName,
-                        leftFileEnd: null,
-                        leftFileStart: null,
-                        rightFileEnd: {
-                            line: 5,
-                            offset: 13
+                    "status": 1,
+                    "threadContext": {
+                        "filePath": "fileName",
+                        "rightFileEnd": {
+                            "line": 3,
+                            "offset": 15
                         },
-                        rightFileStart: {
-                            line: 5,
-                            offset: 1
+                        "rightFileStart": {
+                            "line": 1,
+                            "offset": 10
                         }
                     },
-                    pullRequestThreadContext: {
-                        changeTrackingId: 1,
-                        iterationContext: {
-                            firstComparingIteration: 1,
-                            secondComparingIteration: 2
+                    "pullRequestThreadContext": {
+                        "changeTrackingId": 1,
+                        "iterationContext": {
+                            "firstComparingIteration": 1,
+                            "secondComparingIteration": 2
                         }
                     }
                 }
             ]
         }`
 
-        console.info(`System prompt: ${this.systemMessage}`);
+        console.info(`System prompt:\n${this.systemMessage}`);
     }
 
     public async PerformCodeReview(diff: string, fileName: string, existingComments: string[]): Promise<any> {
@@ -67,14 +66,16 @@ export class ChatGPT {
             | 'gpt-4'
             | 'gpt-3.5-turbo';
 
-        let prompt = `Here is the diff of code changes for the file '${fileName}':\n${diff}\nHere are existing comments for this file:\n`;
-        existingComments.forEach((comment, index) => {
-            prompt += `${index + 1}. ${comment}\n`;
-        });
+        let userPrompt = {
+            fileName: fileName,
+            diff: diff,
+            existingComments: existingComments
+        };
 
-        
+        let prompt = JSON.stringify(userPrompt, null, 4);
         console.info(`Model: ${model}`);
-        console.info(`Prompt: ${prompt}`);
+        console.info(`Diff:\n${diff}`);
+        console.info(`Prompt:\n${prompt}`);
         if (!this.doesMessageExceedTokenLimit(this.systemMessage + prompt, this.maxTokens)) {
             let openAi = await this._openAi.chat.completions.create({
                 messages: [
@@ -92,13 +93,13 @@ export class ChatGPT {
             let response = openAi.choices;
 
             if (response.length > 0) {
-                let comment = response[0].message.content!;
-                console.info(`Response:\n${comment}`);
-                return comment;
+                let content = response[0].message.content!;
+                console.info(`Response:\n${content}`);
+                return JSON.parse(content);
             }
         }
         tl.warning(`Unable to process diff for file ${fileName} as it exceeds token limits.`)
-        return ;
+        return {};
     }
 
     private doesMessageExceedTokenLimit(message: string, tokenLimit: number): boolean {

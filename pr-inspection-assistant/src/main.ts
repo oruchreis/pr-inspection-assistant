@@ -51,8 +51,9 @@ export class Main {
 
             // Get existing comments for the file
             let existingComments = await this._pullRequest.GetCommentsForFile(fileName);
+            console.info("Existing comments: " + existingComments.length);
 
-            console.info(`existingComments: ${existingComments}`);
+            //console.info(`existingComments: ${existingComments}`);
 
             // Perform code review with existing comments
             let reviewComment = await this._chatGpt.PerformCodeReview(diff, fileName, existingComments);
