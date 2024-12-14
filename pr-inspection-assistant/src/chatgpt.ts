@@ -11,7 +11,6 @@ export class ChatGPT {
         - You are provided with the code changes (diff) in a Unified Diff format.
         - You are provided with a file path (fileName).
         - You are provided with existing comments (existingComments) on the file, you must provide any additional code review comments that are not duplicates.
-        - When determining 'rightFileStart' and 'rightFileEnd' line numbers, exclude any lines in the diff that start with '-'. Only count lines that are unchanged or added (lines starting with ' ' or '+').
         - Do not highlight minor issues and nitpicks.
         ${modifiedLinesOnly ? '- Only comment on modified lines.' : ''}
         ${checkForBugs ? '- If there are any bugs, highlight them.' : ''}
@@ -25,21 +24,13 @@ export class ChatGPT {
                 {
                     "comments": [
                         {
-                            "content": "put comment here in markdown format without markdown fenced codeblock.",
+                            "content": "put comment here in markdown format without markdown fenced codeblock. Be as specific to the location within the file as possible.",
                             "commentType": 2
                         }
                     ],
                     "status": 1,
                     "threadContext": {
-                        "filePath": "fileName",
-                        "rightFileEnd": {
-                            "line": 3,
-                            "offset": 15
-                        },
-                        "rightFileStart": {
-                            "line": 1,
-                            "offset": 10
-                        }
+                        "filePath": "fileName"
                     },
                     "pullRequestThreadContext": {
                         "changeTrackingId": 1,
@@ -74,8 +65,8 @@ export class ChatGPT {
 
         let prompt = JSON.stringify(userPrompt, null, 4);
         console.info(`Model: ${model}`);
-        console.info(`Diff:\n${diff}`);
-        console.info(`Prompt:\n${prompt}`);
+        // console.info(`Diff:\n${diff}`);
+        // console.info(`Prompt:\n${prompt}`);
         if (!this.doesMessageExceedTokenLimit(this.systemMessage + prompt, this.maxTokens)) {
             let openAi = await this._openAi.chat.completions.create({
                 messages: [
@@ -94,7 +85,7 @@ export class ChatGPT {
 
             if (response.length > 0) {
                 let content = response[0].message.content!;
-                console.info(`Response:\n${content}`);
+                console.info(`Comments:\n${content}`);
                 return JSON.parse(content);
             }
         }
