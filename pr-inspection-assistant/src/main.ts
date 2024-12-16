@@ -24,11 +24,11 @@ export class Main {
         const apiKey = tl.getInput('api_key', true)!;
         const fileExtensions = tl.getInput('file_extensions', false);
         const filesToExclude = tl.getInput('file_excludes', false);
-        const additionalPrompts = tl.getInput('additional_prompts', false)?.split(',')
-        const bugs: boolean = tl.getBoolInput('bugs', false);
-        const performance: boolean = tl.getBoolInput('performance', false);
-        const bestPractices: boolean = tl.getBoolInput('best_practices', false);
-        const modifiedLinesOnly: boolean = tl.getBoolInput('modified_lines_only', false);
+        const additionalPrompts = tl.getInput('additional_prompts', false)?.split(',');
+        const bugs = tl.getBoolInput('bugs', false);
+        const performance = tl.getBoolInput('performance', false);
+        const bestPractices = tl.getBoolInput('best_practices', false);
+        const modifiedLinesOnly = tl.getBoolInput('modified_lines_only', false);
 
         console.info(`file_extensions: ${fileExtensions}`);
         console.info(`file_excludes: ${filesToExclude}`);
@@ -53,8 +53,6 @@ export class Main {
             let existingComments = await this._pullRequest.GetCommentsForFile(fileName);
             console.info("Existing comments: " + existingComments.length);
 
-            //console.info(`existingComments: ${existingComments}`);
-
             // Perform code review with existing comments
             let reviewComment = await this._chatGpt.PerformCodeReview(diff, fileName, existingComments);
 
@@ -65,8 +63,7 @@ export class Main {
                 }
             }
 
-            console.info(`Completed review of file ${fileName}`)
-
+            console.info(`Completed review of file ${fileName}`);
             tl.setProgress((fileName.length / 100) * index, 'Performing Code Review');
         }
 

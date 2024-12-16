@@ -89,7 +89,7 @@ export class ChatGPT {
                 return JSON.parse(content);
             }
         }
-        tl.warning(`Unable to process diff for file ${fileName} as it exceeds token limits.`)
+        tl.warning(`Unable to process diff for file ${fileName} as it exceeds token limits.`);
         return {};
     }
 

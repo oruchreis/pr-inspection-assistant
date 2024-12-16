@@ -38,8 +38,6 @@ export class PullRequest {
     }
 
     public async AddComment(fileName: string, comment: string): Promise<boolean> {
-
-
         if (!fileName.startsWith('/')) {
             fileName = `/${fileName}`;
         }
@@ -64,26 +62,7 @@ export class PullRequest {
             }
         }
 
-
-
-        let endpoint = `${this._collectionUri}${this._teamProjectId}/_apis/git/repositories/${this._repositoryName}/pullRequests/${this._pullRequestId}/threads?api-version=7.0`
-
-        var response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-            agent: this._httpsAgent
-        });
-
-        if (response.ok == false) {
-            if(response.status == 401) {
-                tl.setResult(tl.TaskResult.Failed, "The Build Service must have 'Contribute to pull requests' access to the repository. See https://stackoverflow.com/a/57985733 for more information");
-            }
-
-            tl.warning(response.statusText)
-        }
-
-        return response.ok;
+        return this.AddThread(body);
     }
 
     public async DeleteComment(thread: any, comment: any): Promise<boolean> {
