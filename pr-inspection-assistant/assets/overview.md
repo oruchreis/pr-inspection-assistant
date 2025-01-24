@@ -1,4 +1,4 @@
-# Pull Request Inspection Assistant (PRIA) - OpenAI PR Review Bot for Azure DevOps
+# Pull Request Inspection Assistant (PRIA) (Fork for Azure OpenAI) - OpenAI PR Review Bot for Azure DevOps
 
 Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assistant (PRIA) and OpenAI. This bot analyzes code changes, offers suggestions, detects potential bugs, and ensures adherence to coding standards. Streamline code reviews with customizable criteria and natural language feedback, improving code quality and reducing review time.
 
@@ -54,8 +54,10 @@ Automate pull request (PR) reviews in Azure DevOps using the PR Inspection Assis
        steps:
          - checkout: self
            persistCredentials: true
-         - task: PRIA@1
+         - task: PRIAAZURE@2
            inputs:
+             api_endpoint: $(OpenAI_Endpoint)
+             api_version: $(OpenAI_Version)
              api_key: $(OpenAI_ApiKey)
 2. **Configure your Main Branch for Build Validation**
 

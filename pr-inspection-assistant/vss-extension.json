@@ -1,9 +1,9 @@
 {
     "manifestVersion": 1,
-    "id": "pria",
-    "version": "2.0.13",
-    "name": "PR Inspection Assistant",
-    "publisher": "EricWellnitz",
+    "id": "priaAzure",
+    "version": "2.0.14",
+    "name": "PR Inspection Assistant Fork(Azure OpenAI)",
+    "publisher": "OruchReis",
     "public": true,
     "targets": [
         {
@@ -38,13 +38,13 @@
     },
     "links": {
         "support": {
-            "uri": "https://github.com/ewellnitz/pr-inspection-assistant",
-            "version": "1.0.0"
+            "uri": "https://github.com/oruchreis/pr-inspection-assistant",
+            "version": "2.0.14"
         }
     },
     "repository": {
         "type": "git",
-        "uri": "https://github.com/ewellnitz/pr-inspection-assistant"
+        "uri": "https://github.com/oruchreis/pr-inspection-assistant"
     },
     "screenshots": [
     ],

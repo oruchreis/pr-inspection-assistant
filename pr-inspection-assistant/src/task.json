@@ -1,15 +1,15 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-    "id": "d3b07384-d9a7-4f3b-8a1d-6e5f3d2b5c3a",
-    "name": "PRIA",
-    "friendlyName": "PR Inspection Assistant",
+    "id": "43a57d4a-d16e-4fe2-b4ef-34d8de02f718",
+    "name": "PRIAAZURE",
+    "friendlyName": "PR Inspection Assistant (Azure OpenAI)",
     "description": "Complete a Code Review using Open AI",
     "category": "Utility",
-    "author": "Eric Wellnitz",
+    "author": "Eric Wellnitz, fork by OruchReis",
     "version": {
         "Major": 2,
         "Minor": 0,
-        "Patch": 13
+        "Patch": 14
     },
     "instanceNameFormat": "PRIA $(message)",
     "inputs": [        
@@ -104,11 +104,8 @@
             "helpMarkDown": "Specify additional Open AI prompts as a comma-separated list to enhance the code review process.\n\n- Add multiple prompts separated by commas.\n- These prompts will be used in conjunction with the main code review prompts.\n\n**Example:**\n```plaintext\nFix variable naming, Ensure consistent indentation, Review error handling approach\n```"
         }
     ],
-    "execution": {
-        "Node10": {
-            "target": "main.js"
-        },
-        "Node16": {
+    "execution": {        
+        "Node20_1": {
             "target": "main.js"
         }
     }
