@@ -72,18 +72,18 @@ export class PullRequest {
     public async AddThread(thread: any): Promise<boolean> {
         
         thread.status = 1;
-        thread.pullRequestThreadContext = {
+        /*thread.pullRequestThreadContext = {
             "changeTrackingId": 1,
             "iterationContext": {
                 "firstComparingIteration": 1,
                 "secondComparingIteration": 2
             }
-        };
+        };*/
 
         if (thread.comments && Array.isArray(thread.comments)) {
             thread.comments.forEach((comment: any) => {
                 if (this._author) {
-                comment.author = this._author;
+                    comment.author = this._author;
                 }
                 comment.commentType = 2;
             });

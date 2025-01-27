@@ -55,7 +55,7 @@ export class Main {
             let fileName = filesToReview[index];
             let diff = await this._repository.GetDiff(fileName);
 
-            console.info("Diff: \r\n" + diff);
+            //console.info("Diff: \r\n" + diff);
 
             // Get existing comments for the file
             let existingComments = await this._pullRequest.GetCommentsForFile(fileName);
