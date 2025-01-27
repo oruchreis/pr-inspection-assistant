@@ -20,9 +20,9 @@ export class ChatGPT {
         ${checkForBestPractices ? '- Provide best-practices.' : '- Do not provide best practices.'}
         ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}`;
 
-        this.systemMessage += `        
-        - A thread represents group of comments by same fileName and same line number. 
-        - Calculate $lineStart,$lineEnd,$offsetStart,$offsetEnd by new (right) file. 
+        this.systemMessage += `                
+        - A threadContext contains $lineStart, $lineEnd,$offsetStart,$offsetEnd which must be greater than zero, and represents the exact commented position. Calculate these values by the comment.
+        - A thread represents a group of comments with the same threadContext in the following JSON. This means that if multiple comments are at the same position, they need to be grouped into a thread.
         - The response must be in following JSON format (without fenced codeblock):
         {
             "threads": [
