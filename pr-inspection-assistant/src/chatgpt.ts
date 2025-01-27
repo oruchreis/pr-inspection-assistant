@@ -9,7 +9,7 @@ export class ChatGPT {
     constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, modifiedLinesOnly: boolean = true, additionalPrompts: string[] = [], language: string = 'English') {
         this.systemMessage = `Your task is to act as a code reviewer of a pull request within Azure DevOps.
         - You are provided with the code changes (diff) in a Unified Diff format.
-        - Unified Diff indicates line numbers like \`@@ -old_line,old_count +new_line,new_count @@\` 
+        - Unified Diff indicates line numbers like \`@@ [-+]old_line,old_count [+-]new_line,new_count @@\` 
         - You are provided with a file path (fileName), existing comments (existingComments) on the file, avoid commenting in a similar meaning.
         - Do not highlight minor issues and nitpicks.
         - Don't try to teach, don't give unnecessary explanations.
@@ -21,7 +21,8 @@ export class ChatGPT {
         ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}`;
 
         this.systemMessage += `                
-        - A threadContext contains $lineStart, $lineEnd,$offsetStart,$offsetEnd which must be greater than zero, and represents the exact commented position. Calculate these values by the comment.
+        - A threadContext represents line number and offset(column) number of the comment on the file. Calculate commented postion using new_line in the unified diff.
+        - Represent exact commented postion(line and offset numbers) as $lineStart,$lineEnd,$offsetStart,$offsetEnd. All these variables must be greater than zero! Minimum Value is 1.
         - A thread represents a group of comments with the same threadContext in the following JSON. This means that if multiple comments are at the same position, they need to be grouped into a thread.
         - The response must be in following JSON format (without fenced codeblock):
         {
