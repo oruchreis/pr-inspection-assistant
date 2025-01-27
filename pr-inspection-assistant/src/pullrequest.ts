@@ -9,20 +9,93 @@ export class PullRequest {
     private _teamProjectId: string = tl.getVariable('System.TeamProjectId')!;
     private _repositoryName: string = tl.getVariable('Build.Repository.Name')!;
     private _pullRequestId: string = tl.getVariable('System.PullRequest.PullRequestId')!;
+    private _author: any;
 
     constructor() {
         this._httpsAgent = new Agent({
             rejectUnauthorized: false
         });
+
+        
+    }
+
+    public async CheckAuthor(): Promise<boolean> {
+        let authorEmail = tl.getInput('author_email', false);
+        if (!authorEmail)
+            return false;
+        
+
+        let endpoint = `${this._collectionUri}/_apis/identities?api-version=7.0&searchFilter=General&filterValue=${encodeURIComponent(authorEmail)}`;
+        try {
+            const response = await fetch(endpoint, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`,
+                    'Content-Type': 'application/json'
+                },
+                agent: this._httpsAgent
+            });
+
+            // Check if the response is successful
+            if (!response.ok) {
+                tl.warning(`Failed to fetch author details. Status: ${response.status}, Message: ${response.statusText}`);
+                return false;
+            }
+
+            // Parse the JSON response
+            const data = await response.json();
+
+            if (data && data.value && data.value.length > 0) {
+                const identity = data.value[0]; // Use the first matched identity
+
+                // Map only IdentityRef properties to _author
+                this._author = {
+                    id: identity.id,
+                    displayName: identity.displayName,
+                    uniqueName: identity.uniqueName,
+                    imageUrl: identity.imageUrl,
+                    descriptor: identity.descriptor
+                };
+
+                tl.debug(`Author set: ${JSON.stringify(this._author)}`);
+                return true;
+            } else {
+                tl.warning(`Author with email ${authorEmail} not found.`);
+                return false;
+            }
+        } catch (error) {
+            tl.warning(`Error occurred while fetching author: ${error}`);
+            return false;
+        }
     }
 
     public async AddThread(thread: any): Promise<boolean> {
-        let endpoint = `${this._collectionUri}${this._teamProjectId}/_apis/git/repositories/${this._repositoryName}/pullRequests/${this._pullRequestId}/threads?api-version=7.0`
+        
+        thread.status = 1;
+        thread.pullRequestThreadContext = {
+            "changeTrackingId": 1,
+            "iterationContext": {
+                "firstComparingIteration": 1,
+                "secondComparingIteration": 2
+            }
+        };
 
+        if (thread.comments && Array.isArray(thread.comments)) {
+            thread.comments.forEach((comment: any) => {
+                if (this._author) {
+                comment.author = this._author;
+                }
+                comment.commentType = 2;
+            });
+        }        
+
+        let endpoint = `${this._collectionUri}${this._teamProjectId}/_apis/git/repositories/${this._repositoryName}/pullRequests/${this._pullRequestId}/threads?api-version=7.0`;
+
+        let requestBody = JSON.stringify(thread)
         var response = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(thread),
+            body: requestBody,
             agent: this._httpsAgent
         });
 
@@ -31,7 +104,7 @@ export class PullRequest {
                 tl.setResult(tl.TaskResult.Failed, "The Build Service must have 'Contribute to pull requests' access to the repository. See https://stackoverflow.com/a/57985733 for more information");
             }
 
-            tl.warning(response.statusText)
+            tl.warning(`Status: ${response.statusText}\r\nBody: ${requestBody}`);
         }
 
         return response.ok;

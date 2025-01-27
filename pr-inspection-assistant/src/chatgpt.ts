@@ -13,30 +13,29 @@ export class ChatGPT {
         - You are provided with existing comments (existingComments) on the file, you must provide any additional code review comments that are not duplicates.
         - Do not highlight minor issues and nitpicks.
         ${modifiedLinesOnly ? '- Only comment on modified lines.' : ''}
-        ${checkForBugs ? '- If there are any bugs, highlight them.' : ''}
-        ${checkForPerformance ? '- If there are major performance problems, highlight them.' : ''}
-        ${checkForBestPractices ? '- Provide details on missed use of best-practices.' : '- Do not provide comments on best practices.'}
+        ${checkForBugs ? '- Highlight any bugs.' : ''}
+        ${checkForPerformance ? '- Hşghlight performance problems.' : ''}
+        ${checkForBestPractices ? '- Provide best-practices.' : '- Do not provide best practices.'}
         ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}`;
 
-        this.systemMessage += `The response should be a single JSON object (without fenced codeblock) and it must use this sample JSON format:
+        this.systemMessage += `The response must be a single JSON object (without fenced codeblock) and each thread refers to different lines and offsets in the code:
         {
             "threads": [
                 {
                     "comments": [
                         {
-                            "content": "put comment here in markdown format without markdown fenced codeblock. Be as specific to the location within the file as possible.",
-                            "commentType": 2
+                            "content": "put comment here in markdown format without markdown fenced codeblock."
                         }
                     ],
-                    "status": 1,
                     "threadContext": {
-                        "filePath": "fileName"
-                    },
-                    "pullRequestThreadContext": {
-                        "changeTrackingId": 1,
-                        "iterationContext": {
-                            "firstComparingIteration": 1,
-                            "secondComparingIteration": 2
+                        "filePath": "$fileName",
+                        "rightFileStart": {
+                            "line": $lineStart,
+                            "offset": $offsetStart
+                        },
+                        "rightFileEnd": {
+                            "line": $lineEnd,
+                            "offset": $offsetEnd
                         }
                     }
                 }
@@ -54,6 +53,7 @@ export class ChatGPT {
             | 'o1-mini'
             | 'o1-preview'
             | 'gpt-4o'
+            | 'gpt-4o-mini'
             | 'gpt-4'
             | 'gpt-3.5-turbo';
 

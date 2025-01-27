@@ -45,6 +45,7 @@ export class Main {
         this._chatGpt = new ChatGPT(client, bugs, performance, bestPractices, modifiedLinesOnly, additionalPrompts);
         this._repository = new Repository();
         this._pullRequest = new PullRequest();
+        await this._pullRequest.CheckAuthor();
         let filesToReview = await this._repository.GetChangedFiles(fileExtensions, filesToExclude);
 
         tl.setProgress(0, 'Performing Code Review');

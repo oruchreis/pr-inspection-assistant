@@ -9,7 +9,7 @@
     "version": {
         "Major": 2,
         "Minor": 0,
-        "Patch": 15
+        "Patch": 16
     },
     "instanceNameFormat": "PRIA $(message)",
     "inputs": [        
@@ -30,6 +30,7 @@
                 "o1-mini": "o1-mini",
                 "o1-preview": "o1-preview",
                 "gpt-4o": "gpt-4o",
+                "gpt-4o-mini": "gpt-4o-mini",
                 "gpt-4": "gpt-4",
                 "gpt-3.5-turbo": "gpt-3.5-turbo"
             },
@@ -50,6 +51,14 @@
             "defaultValue": "",
             "required": false,
             "helpMarkDown": "Endpoint of Azure OpenAI Service."
+        },
+        {
+            "name": "author_email",
+            "type": "string",
+            "label": "Author Email of comments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "You can specify an author email for comment author like bot user account."
         },
         {
             "name": "bugs",
