@@ -25,13 +25,14 @@ export class Main {
         const apiKey = tl.getInput('api_key', true)!;
         const apiEndpoint = tl.getInput('api_endpoint', false)!;
         const apiVersion = tl.getInput('api_version', false)!;
+        const language = tl.getInput('lang', false);
         const fileExtensions = tl.getInput('file_extensions', false);
         const filesToExclude = tl.getInput('file_excludes', false);
         const additionalPrompts = tl.getInput('additional_prompts', false)?.split(',');
         const bugs = tl.getBoolInput('bugs', false);
         const performance = tl.getBoolInput('performance', false);
         const bestPractices = tl.getBoolInput('best_practices', false);
-        const modifiedLinesOnly = tl.getBoolInput('modified_lines_only', false);
+        const modifiedLinesOnly = tl.getBoolInput('modified_lines_only', false);        
 
         console.info(`file_extensions: ${fileExtensions}`);
         console.info(`file_excludes: ${filesToExclude}`);
@@ -42,7 +43,7 @@ export class Main {
         console.info(`modified_lines_only: ${modifiedLinesOnly}`);
 
         const client = apiEndpoint ? new AzureOpenAI({ apiKey: apiKey, endpoint: apiEndpoint, apiVersion: apiVersion }) : new OpenAI({ apiKey: apiKey });
-        this._chatGpt = new ChatGPT(client, bugs, performance, bestPractices, modifiedLinesOnly, additionalPrompts);
+        this._chatGpt = new ChatGPT(client, bugs, performance, bestPractices, modifiedLinesOnly, additionalPrompts, language);
         this._repository = new Repository();
         this._pullRequest = new PullRequest();
         await this._pullRequest.CheckAuthor();
@@ -53,6 +54,8 @@ export class Main {
         for (let index = 0; index < filesToReview.length; index++) {
             let fileName = filesToReview[index];
             let diff = await this._repository.GetDiff(fileName);
+
+            console.info("Diff: \r\n" + diff);
 
             // Get existing comments for the file
             let existingComments = await this._pullRequest.GetCommentsForFile(fileName);

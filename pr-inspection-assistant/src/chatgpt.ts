@@ -6,15 +6,17 @@ export class ChatGPT {
     private readonly systemMessage: string = '';
     private readonly maxTokens: number = 128000;
 
-    constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, modifiedLinesOnly: boolean = true, additionalPrompts: string[] = []) {
+    constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, modifiedLinesOnly: boolean = true, additionalPrompts: string[] = [], language: string = 'English') {
         this.systemMessage = `Your task is to act as a code reviewer of a pull request within Azure DevOps.
         - You are provided with the code changes (diff) in a Unified Diff format.
         - You are provided with a file path (fileName).
         - You are provided with existing comments (existingComments) on the file, you must provide any additional code review comments that are not duplicates.
         - Do not highlight minor issues and nitpicks.
+        - Don't try to teach, don't give unnecessary explanations.
+        - Comments must be in '${language}', in as short sentences as possible.
         ${modifiedLinesOnly ? '- Only comment on modified lines.' : ''}
         ${checkForBugs ? '- Highlight any bugs.' : ''}
-        ${checkForPerformance ? '- Hşghlight performance problems.' : ''}
+        ${checkForPerformance ? '- Highlight performance problems.' : ''}
         ${checkForBestPractices ? '- Provide best-practices.' : '- Do not provide best practices.'}
         ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}`;
 
@@ -24,7 +26,7 @@ export class ChatGPT {
                 {
                     "comments": [
                         {
-                            "content": "put comment here in markdown format without markdown fenced codeblock."
+                            "content": "put comment here in markdown format, codes must be in (\` or \`\`\`) codeblock."
                         }
                     ],
                     "threadContext": {
