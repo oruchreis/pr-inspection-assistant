@@ -69,16 +69,101 @@ export class PullRequest {
         }
     }
 
+    private async GetChangeTrackingIdAndIterationContext(filePath: string): Promise<{ changeTrackingId: number; firstComparingIteration: number; secondComparingIteration: number; } | null> {
+        const iterationsEndpoint = `${this._collectionUri}${this._teamProjectId}/_apis/git/repositories/${this._repositoryName}/pullRequests/${this._pullRequestId}/iterations?api-version=7.0`;
+
+        try {
+            // Fetch all iterations
+            const iterationsResponse = await fetch(iterationsEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`,
+                    'Content-Type': 'application/json'
+                },
+                agent: this._httpsAgent
+            });
+
+            if (!iterationsResponse.ok) {
+                tl.warning(`Failed to fetch iterations. Status: ${iterationsResponse.status}, Message: ${iterationsResponse.statusText}`);
+                return null;
+            }
+
+            const iterations: any[] = await iterationsResponse.json();
+            const latestIteration = iterations[iterations.length - 1]; // Use the latest iteration
+
+            if (!latestIteration) {
+                tl.warning(`No iterations found for the pull request.`);
+                return null;
+            }
+
+            const changesEndpoint = `${this._collectionUri}${this._teamProjectId}/_apis/git/repositories/${this._repositoryName}/pullRequests/${this._pullRequestId}/iterations/${latestIteration.id}/changes?api-version=7.0`;
+
+            // Fetch changes for the latest iteration
+            const changesResponse = await fetch(changesEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`,
+                    'Content-Type': 'application/json'
+                },
+                agent: this._httpsAgent
+            });
+
+            if (!changesResponse.ok) {
+                tl.warning(`Failed to fetch changes for iteration ${latestIteration.id}. Status: ${changesResponse.status}, Message: ${changesResponse.statusText}`);
+                return null;
+            }
+
+            const changesData = await changesResponse.json();
+            const change = changesData.changeEntries.find((c: any) => c.originalPath === filePath || c.sourceServerItem === filePath);
+
+            if (change) {
+                return {
+                    changeTrackingId: change.changeTrackingId,
+                    firstComparingIteration: 1, // Assuming the first iteration as the baseline
+                    secondComparingIteration: latestIteration.id
+                };
+            } else {
+                tl.warning(`No changes found for file: ${filePath}`);
+                return null;
+            }
+        } catch (error) {
+            tl.warning(`Error occurred while fetching changes: ${error}`);
+            return null;
+        }
+    }
+
+
     public async AddThread(thread: any): Promise<boolean> {
         
         thread.status = 1;
-        /*thread.pullRequestThreadContext = {
-            "changeTrackingId": 1,
-            "iterationContext": {
-                "firstComparingIteration": 1,
-                "secondComparingIteration": 2
+        const filePath = thread.filePath || "";
+        const context = await this.GetChangeTrackingIdAndIterationContext(filePath);
+
+        if (context) {
+            thread.pullRequestThreadContext = {
+                changeTrackingId: context.changeTrackingId,
+                iterationContext: {
+                    firstComparingIteration: context.firstComparingIteration,
+                    secondComparingIteration: context.secondComparingIteration
+                },
+                trackingCriteria: {
+                    filePath: filePath,
+                    onRight: true
+                }
+            };
+        } else {
+            thread.pullRequestThreadContext = {
+                changeTrackingId: 1,
+                iterationContext: {
+                    firstComparingIteration: 1,
+                    secondComparingIteration: 2
+                },
+                trackingCriteria: {
+                    filePath: filePath,
+                    onRight: true
+                }
             }
-        };*/
+        }
 
         if (thread.comments && Array.isArray(thread.comments)) {
             thread.comments.forEach((comment: any) => {
@@ -103,8 +188,13 @@ export class PullRequest {
             if(response.status == 401) {
                 tl.setResult(tl.TaskResult.Failed, "The Build Service must have 'Contribute to pull requests' access to the repository. See https://stackoverflow.com/a/57985733 for more information");
             }
-
-            tl.warning(`Status: ${response.statusText}\r\nBody: ${requestBody}`);
+            else
+            {
+                console.info(`Request: ${requestBody}`);
+                let responseBody = await response.text();
+                console.info(`Response: ${responseBody}`);
+            }            
+            tl.warning(`Status: ${response.statusText}`);
         }
 
         return response.ok;

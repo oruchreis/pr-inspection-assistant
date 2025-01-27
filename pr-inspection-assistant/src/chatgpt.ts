@@ -10,7 +10,7 @@ export class ChatGPT {
         this.systemMessage = `Your task is to act as a code reviewer of a pull request within Azure DevOps.
         - You are provided with the code changes (diff) in a Unified Diff format.
         - Unified Diff indicates line numbers like \`@@ -old_line,old_count +new_line,new_count @@\` 
-        - You are provided with a file path (fileName), existing comments (existingComments) on the file, you must only comment if there are different comments from the existing comments.
+        - You are provided with a file path (fileName), existing comments (existingComments) on the file, avoid commenting in a similar meaning.
         - Do not highlight minor issues and nitpicks.
         - Don't try to teach, don't give unnecessary explanations.
         - Comments must be in '${language}', in as short sentences as possible.
@@ -20,7 +20,10 @@ export class ChatGPT {
         ${checkForBestPractices ? '- Provide best-practices.' : '- Do not provide best practices.'}
         ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}`;
 
-        this.systemMessage += `The response must be in following JSON format (without fenced codeblock) and group the comments as threads by fileName, line and calculate line and offset start/end by new file:
+        this.systemMessage += `        
+        - A thread represents group of comments by same fileName and same line number. 
+        - Calculate $lineStart,$lineEnd,$offsetStart,$offsetEnd by new (right) file. 
+        - The response must be in following JSON format (without fenced codeblock):
         {
             "threads": [
                 {
