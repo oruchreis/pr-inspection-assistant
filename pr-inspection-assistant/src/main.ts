@@ -50,7 +50,7 @@ export class Main {
         let filesToReview = await this._repository.GetChangedFiles(fileExtensions, filesToExclude);
 
         tl.setProgress(0, 'Getting Diff and Existing Comments');
-        const diffByFilePath = new Map<string, any>();
+        let diffByFilePath = new Map<string, any>();
         for (let index = 0; index < filesToReview.length; index++) {
             let filePath = filesToReview[index];
             let diffAndComments = {

@@ -133,8 +133,8 @@ export class PullRequest {
     public async AddThread(thread: any): Promise<boolean> {
         
         thread.status = 1;
-        const filePath = thread.filePath || "";
-        const context = await this.GetChangeTrackingIdAndIterationContext(filePath);
+        let filePath = thread.filePath || "";
+        let context = await this.GetChangeTrackingIdAndIterationContext(filePath);
 
         if (context) {
             thread.pullRequestThreadContext = {
@@ -170,7 +170,7 @@ export class PullRequest {
         let endpoint = `${this._collectionUri}${this._teamProjectId}/_apis/git/repositories/${this._repositoryName}/pullRequests/${this._pullRequestId}/threads?api-version=7.0`;
 
         let requestBody = JSON.stringify(thread)
-        var response = await fetch(endpoint, {
+        let response = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 'Content-Type': 'application/json' },
             body: requestBody,
