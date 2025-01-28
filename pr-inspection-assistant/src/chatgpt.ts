@@ -16,7 +16,7 @@ export class ChatGPT {
                   "comments": [
                       {
                           "comment": "Your comment here.",
-                          "lineRange": {
+                          "highlight": {
                               "start": { "line": 1, "column": 1 },
                               "end": { "line": 1, "column": 1 }
                           }
@@ -28,9 +28,9 @@ export class ChatGPT {
 
         - You will receive code changes (\`diff\`) are in Unified Diff format, which includes lines like in this regex \`@@\\s*[+-][0-9]+,[0-9]+\\s+[+-](?<new_line>[0-9]+),[0-9]+\\s*@@.\`
           Use the \`new_line\` captured by the regex group \`(?<new_line>)\` to determine the starting line in the right file and calculate subsequent lines.
-        - Highlight your comment in the code in specific range by using \`lineRange\` which represents start and end of highlighting of your comment which calculated by \`new_line\`. 
-        - Calculate \`column\` range which represents the specific range of the comment in the line.
-        - Ensure all values (\`lineRange.start.line\`, \`lineRange.end.line\`, \`lineRange.start.column\`, \`lineRange.end.column\`) > 0 (minimum value: 1).
+        - Highlight your comment in the code in specific range by using \`highlight\` which represents start and end of highlighting of your comment which calculated by \`new_line\`. 
+        - Calculate highlighted \`column\` range which represents the specific range of the comment in the line.
+        - Ensure all values (\`highlight.start.line\`, \`highlight.end.line\`, \`highlight.start.column\`, \`highlight.end.column\`) > 0 (minimum value: 1).
 
         - You will also receive the file path (\`filePath\`) and existing comments (\`existingComments\`). Avoid duplicating similar comments.
         - Ignore minor issues and nitpicks.

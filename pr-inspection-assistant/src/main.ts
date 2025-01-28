@@ -83,13 +83,13 @@ export class Main {
     
         for (const file of data) {
           for (const comment of file.comments) {
-            const lineRangeKey = `${comment.lineRange.start.line},${comment.lineRange.start.column}-${comment.lineRange.end.line},${comment.lineRange.end.column}`;
-            const key = `${file.filePath}:${lineRangeKey}`;
+            const highlightKey = `${comment.highlight.start.line},${comment.highlight.start.column}-${comment.highlight.end.line},${comment.highlight.end.column}`;
+            const key = `${file.filePath}:${highlightKey}`;
     
             if (!grouped.has(key)) {
               grouped.set(key, {
                 filePath: file.filePath,
-                lineRange: comment.lineRange,
+                highlight: comment.highlight,
                 comments: [],
               });
             }
@@ -107,12 +107,12 @@ export class Main {
                 threadContext: {
                     filePath: value.filePath,
                     rightFileStart: {
-                    line: value.lineRange.start.line === 0 ? 1 : value.lineRange.start.line,
-                    offset: value.lineRange.start.column === 0 ? 1 : value.lineRange.start.column,
+                    line: value.highlight.start.line === 0 ? 1 : value.highlight.start.line,
+                    offset: value.highlight.start.column === 0 ? 1 : value.highlight.start.column,
                     },
                     rightFileEnd: {
-                    line: value.lineRange.end.line === 0 ? 1 : value.lineRange.end.line,
-                    offset: value.lineRange.end.column === 0 ? 1 : value.lineRange.end.column,
+                    line: value.highlight.end.line === 0 ? 1 : value.highlight.end.line,
+                    offset: value.highlight.end.column === 0 ? 1 : value.highlight.end.column,
                     },
                 },
             });
