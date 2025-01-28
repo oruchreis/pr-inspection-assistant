@@ -7,53 +7,50 @@ export class ChatGPT {
     private readonly maxTokens: number = 128000;
 
     constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, modifiedLinesOnly: boolean = true, additionalPrompts: string[] = [], language: string = 'English') {
-        this.systemMessage = `Your task is to act as a code reviewer of a pull request within Azure DevOps.
-        - You are provided with the code changes (diff) in a Unified Diff format.
-        - Unified Diff indicates line numbers like \`@@ [-+]old_line,old_count [+-]new_line,new_count @@\` 
-        - You are provided with a file path (fileName), existing comments (existingComments) on the file, avoid commenting in a similar meaning.
-        - Do not highlight minor issues and nitpicks.
-        - Don't try to teach, don't give unnecessary explanations.
-        - Comments must be in '${language}', in as short sentences as possible.
-        ${modifiedLinesOnly ? '- Only comment on modified lines.' : ''}
-        ${checkForBugs ? '- Highlight any bugs.' : ''}
-        ${checkForPerformance ? '- Highlight performance problems.' : ''}
-        ${checkForBestPractices ? '- Provide best-practices.' : '- Do not provide best practices.'}
-        ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}`;
+        this.systemMessage = `Your task is to review a pull request in Azure DevOps.
+        - The response must follow this JSON format:
+          \`\`\`
+          [
+              {
+                  "filePath": "$filePath",
+                  "comments": [
+                      {
+                          "comment": "Your comment here.",
+                          "lineRange": {
+                              "start": { "line": 1, "column": 1 },
+                              "end": { "line": 1, "column": 1 }
+                          }
+                      }
+                  ]
+              }
+          ]
+          \`\`\`
 
-        this.systemMessage += `                
-        - A threadContext represents line number and offset(column) number of the comment on the file. Calculate commented postion using new_line in the unified diff.
-        - Represent exact commented postion(line and offset numbers) as $lineStart,$lineEnd,$offsetStart,$offsetEnd. All these variables must be greater than zero! Minimum Value is 1.
-        - A thread represents a group of comments with the same threadContext in the following JSON. This means that if multiple comments are at the same position, they need to be grouped into a thread.
-        - The response must be in following JSON format (without fenced codeblock):
-        {
-            "threads": [
-                {
-                    "comments": [
-                        {
-                            "content": "put comment here in markdown format, codes must be in (\` or \`\`\`) codeblock."
-                        }
-                    ],
-                    "threadContext": {
-                        "filePath": "$fileName",
-                        "rightFileStart": {
-                            "line": $lineStart,
-                            "offset": $offsetStart
-                        },
-                        "rightFileEnd": {
-                            "line": $lineEnd,
-                            "offset": $offsetEnd
-                        }
-                    }
-                }
-            ]
-        }`
+        - You will receive code changes (\`diff\`) are in Unified Diff format, which includes lines like in this regex \`@@\\s*[+-][0-9]+,[0-9]+\\s+[+-](?<new_line>[0-9]+),[0-9]+\\s*@@.\`
+          Use the \`new_line\` captured by the regex group \`(?<new_line>)\` to determine the starting line in the right file and calculate subsequent lines.
+        - \`lineRange\` represents the commented line and column range
+        - Calculate \`column\` from the start of the modified line (not in the diff). 
+        - Ensure all values (\`lineRange.start.line\`, \`lineRange.end.line\`, \`lineRange.start.column\`, \`lineRange.end.column\`) > 0 (minimum value: 1).
+
+        - You will also receive the file path (\`filePath\`) and existing comments (\`existingComments\`). Avoid duplicating similar comments.
+        - Ignore minor issues and nitpicks.
+        - Do not include teaching or unnecessary explanations.
+        - Comments must be concise and in '${language}' language.
+        - ${modifiedLinesOnly ? 'Only comment on modified lines.' : ''}
+        - ${checkForBugs ? 'Highlight bugs.' : ''}
+        - ${checkForPerformance ? 'Highlight performance issues.' : ''}
+        - ${checkForBestPractices ? 'Suggest best practices.' : 'Avoid suggesting best practices.'}
+        - ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}
+        `;
+
+
 
         console.info(`System prompt:\n${this.systemMessage}`);
     }
 
-    public async PerformCodeReview(diff: string, fileName: string, existingComments: string[]): Promise<any> {
-        if (!fileName.startsWith('/')) {
-            fileName = `/${fileName}`;
+    public async PerformCodeReview(diff: string, filePath: string, existingComments: string[]): Promise<any> {
+        if (!filePath.startsWith('/')) {
+            filePath = `/${filePath}`;
         }
         let model = tl.getInput('ai_model', true) as | (string & {})
             | 'o1-mini'
@@ -64,7 +61,7 @@ export class ChatGPT {
             | 'gpt-3.5-turbo';
 
         let userPrompt = {
-            fileName: fileName,
+            filePath: filePath,
             diff: diff,
             existingComments: existingComments
         };
@@ -95,7 +92,7 @@ export class ChatGPT {
                 return JSON.parse(content);
             }
         }
-        tl.warning(`Unable to process diff for file ${fileName} as it exceeds token limits.`);
+        tl.warning(`Unable to process diff for file ${filePath} as it exceeds token limits.`);
         return {};
     }
 

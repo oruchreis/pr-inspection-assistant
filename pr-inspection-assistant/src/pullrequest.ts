@@ -92,7 +92,6 @@ export class PullRequest {
             const latestIteration = iterations[iterations.length - 1]; // Use the latest iteration
 
             if (!latestIteration) {
-                tl.warning(`No iterations found for the pull request.`);
                 return null;
             }
 
@@ -123,7 +122,6 @@ export class PullRequest {
                     secondComparingIteration: latestIteration.id
                 };
             } else {
-                tl.warning(`No changes found for file: ${filePath}`);
                 return null;
             }
         } catch (error) {
@@ -157,10 +155,6 @@ export class PullRequest {
                 iterationContext: {
                     firstComparingIteration: 1,
                     secondComparingIteration: 2
-                },
-                trackingCriteria: {
-                    filePath: filePath,
-                    onRight: true
                 }
             }
         }

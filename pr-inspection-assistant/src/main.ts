@@ -65,8 +65,8 @@ export class Main {
             let reviewComment = await this._chatGpt.PerformCodeReview(diff, fileName, existingComments);
 
             // Add the review comments to the pull request 
-            if (reviewComment && reviewComment.threads) {
-                for (let thread of reviewComment.threads as any[]) {
+            if (reviewComment) {
+                for (const thread of this.prepareThreads(reviewComment as any[])) {                    
                     await this._pullRequest.AddThread(thread);
                 }
             }
@@ -77,6 +77,53 @@ export class Main {
 
         tl.setResult(tl.TaskResult.Succeeded, "Pull Request reviewed.");
     }
+
+    private static prepareThreads(data: any[]): any[] {
+        const grouped = new Map<string, any>();
+    
+        for (const file of data) {
+          for (const comment of file.comments) {
+            const lineRangeKey = `${comment.lineRange.start.line},${comment.lineRange.start.column}-${comment.lineRange.end.line},${comment.lineRange.end.column}`;
+            const key = `${file.filePath}:${lineRangeKey}`;
+    
+            if (!grouped.has(key)) {
+              grouped.set(key, {
+                filePath: file.filePath,
+                lineRange: comment.lineRange,
+                comments: [],
+              });
+            }
+    
+            grouped.get(key)!.comments.push(comment.comment);
+          }
+        }
+    
+        const result: any[] = [];
+        for (const value of grouped.values()) {
+          result.push({
+            threads: [
+              {
+                comments: value.comments.map((content: string) => ({
+                  content: content,
+                })),
+                threadContext: {
+                  filePath: value.filePath,
+                  rightFileStart: {
+                    line: value.lineRange.start.line === 0 ? 1 : value.lineRange.start.line,
+                    offset: value.lineRange.start.column === 0 ? 1 : value.lineRange.start.column,
+                  },
+                  rightFileEnd: {
+                    line: value.lineRange.end.line === 0 ? 1 : value.lineRange.end.line,
+                    offset: value.lineRange.end.column === 0 ? 1 : value.lineRange.end.column,
+                  },
+                },
+              },
+            ],
+          });
+        }
+    
+        return result;
+      }
 }
 
 Main.Main();

@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "priaAzure",
-    "version": "2.0.21",
+    "version": "2.0.22",
     "name": "PR Inspection Assistant Fork(Azure OpenAI)",
     "publisher": "OruchReis",
     "public": true,
