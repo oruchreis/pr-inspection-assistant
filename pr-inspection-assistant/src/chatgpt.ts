@@ -7,8 +7,8 @@ export class ChatGPT {
     private readonly maxTokens: number = 128000;
 
     constructor(private _openAi: OpenAI, checkForBugs: boolean = false, checkForPerformance: boolean = false, checkForBestPractices: boolean = false, modifiedLinesOnly: boolean = true, additionalPrompts: string[] = [], language: string = 'English') {
-        this.systemMessage = `Your task is to review a pull request in Azure DevOps.
-        - The response must follow this JSON format:
+        this.systemMessage = `Your task is to review a pull request in Azure DevOps and response a raw json.
+        - The response must follow this JSON format(without fenced codeblock):
           \`\`\`
           [
               {
@@ -25,7 +25,7 @@ export class ChatGPT {
               }
           ]
           \`\`\`
-
+        - Return \`[]\` as a response if no comment is needed
         - You will receive code changes (\`diff\`) are in Unified Diff format, which includes lines like in this regex \`@@\\s*[+-][0-9]+,[0-9]+\\s+[+-](?<new_line>[0-9]+),[0-9]+\\s*@@.\`
           Use the \`new_line\` captured by the regex group \`(?<new_line>)\` to determine the starting line in the right file and calculate subsequent lines.
         - Highlight your comment in the code in specific range by using \`highlight\` which represents start and end of highlighting of your comment which calculated by \`new_line\`. 
