@@ -28,8 +28,8 @@ export class ChatGPT {
 
         - You will receive code changes (\`diff\`) are in Unified Diff format, which includes lines like in this regex \`@@\\s*[+-][0-9]+,[0-9]+\\s+[+-](?<new_line>[0-9]+),[0-9]+\\s*@@.\`
           Use the \`new_line\` captured by the regex group \`(?<new_line>)\` to determine the starting line in the right file and calculate subsequent lines.
-        - \`lineRange\` represents the commented line and column range
-        - Calculate \`column\` from the start of the modified line (not in the diff). 
+        - \`lineRange\` represents start and end of highlighting of your comment which calculated by \`new_line\`.
+        - Calculate highlighted \`column\` range from the start of the modified line (not in the diff). 
         - Ensure all values (\`lineRange.start.line\`, \`lineRange.end.line\`, \`lineRange.start.column\`, \`lineRange.end.column\`) > 0 (minimum value: 1).
 
         - You will also receive the file path (\`filePath\`) and existing comments (\`existingComments\`). Avoid duplicating similar comments.

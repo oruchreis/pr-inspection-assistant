@@ -100,26 +100,22 @@ export class Main {
     
         const result: any[] = [];
         for (const value of grouped.values()) {
-          result.push({
-            threads: [
-              {
+            result.push({
                 comments: value.comments.map((content: string) => ({
-                  content: content,
+                    content: content,
                 })),
                 threadContext: {
-                  filePath: value.filePath,
-                  rightFileStart: {
+                    filePath: value.filePath,
+                    rightFileStart: {
                     line: value.lineRange.start.line === 0 ? 1 : value.lineRange.start.line,
                     offset: value.lineRange.start.column === 0 ? 1 : value.lineRange.start.column,
-                  },
-                  rightFileEnd: {
+                    },
+                    rightFileEnd: {
                     line: value.lineRange.end.line === 0 ? 1 : value.lineRange.end.line,
                     offset: value.lineRange.end.column === 0 ? 1 : value.lineRange.end.column,
-                  },
+                    },
                 },
-              },
-            ],
-          });
+            });
         }
     
         return result;
