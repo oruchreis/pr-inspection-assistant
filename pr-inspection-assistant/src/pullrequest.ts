@@ -5,8 +5,8 @@ import fetch from 'node-fetch';
 export class PullRequest {
     private _httpsAgent: Agent;
 
-    private _collectionUri: string = tl.getVariable('System.TeamFoundationCollectionUri')!;    
-    private _vspsUri = this._collectionUri.replace("https://", "https://vsps.");
+    private _collectionUri: string = tl.getVariable('System.TeamFoundationCollectionUri')!;
+    private _vsspsUri = this._collectionUri.replace("https://", "https://vssps.");    
     private _teamProjectId: string = tl.getVariable('System.TeamProjectId')!;
     private _repositoryName: string = tl.getVariable('Build.Repository.Name')!;
     private _pullRequestId: string = tl.getVariable('System.PullRequest.PullRequestId')!;
@@ -25,8 +25,7 @@ export class PullRequest {
         if (!authorEmail)
             return false;
         
-
-        let endpoint = `${this._vspsUri}/_apis/identities?api-version=7.0&searchFilter=General&filterValue=${encodeURIComponent(authorEmail)}`;
+        let endpoint = `${this._vsspsUri}/_apis/identities?api-version=7.0&searchFilter=General&filterValue=${encodeURIComponent(authorEmail)}`;
         try {
             const response = await fetch(endpoint, {
                 method: 'GET',
@@ -64,8 +63,8 @@ export class PullRequest {
                 tl.warning(`Author with email ${authorEmail} not found.`);
                 return false;
             }
-        } catch (error) {
-            tl.warning(`Error occurred while fetching author: ${error}`);
+        } catch (error) {            
+            tl.warning(`Error occurred while fetching author: ${error}, endpoint: ${endpoint}`);
             return false;
         }
     }
