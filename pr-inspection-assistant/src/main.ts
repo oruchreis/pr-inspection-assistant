@@ -53,7 +53,7 @@ export class Main {
         const diffByFilePath = new Map<string, any>();
         for (let index = 0; index < filesToReview.length; index++) {
             let filePath = filesToReview[index];
-            const diffAndComments = {
+            let diffAndComments = {
                 diff: await this._repository.GetDiff(filePath),
                 existingComments: await this._pullRequest.GetCommentsForFile(filePath)
             };
@@ -85,12 +85,12 @@ export class Main {
     }
 
     private static prepareThreads(data: any[]): any[] {
-        const grouped = new Map<string, any>();
+        let grouped = new Map<string, any>();
     
-        for (const file of data) {
-          for (const comment of file.comments) {
-            const highlightKey = `${comment.highlight.start.line},${comment.highlight.start.column}-${comment.highlight.end.line},${comment.highlight.end.column}`;
-            const key = `${file.filePath}:${highlightKey}`;
+        for (let file of data) {
+          for (let comment of file.comments) {
+            let highlightKey = `${comment.highlight.start.line},${comment.highlight.start.column}-${comment.highlight.end.line},${comment.highlight.end.column}`;
+            let key = `${file.filePath}:${highlightKey}`;
     
             if (!grouped.has(key)) {
               grouped.set(key, {
@@ -104,8 +104,8 @@ export class Main {
           }
         }
     
-        const result: any[] = [];
-        for (const value of grouped.values()) {
+        let result: any[] = [];
+        for (let value of grouped.values()) {
             result.push({
                 comments: value.comments.map((content: string) => ({
                     content: content,
@@ -113,12 +113,12 @@ export class Main {
                 threadContext: {
                     filePath: value.filePath,
                     rightFileStart: {
-                    line: value.highlight.start.line === 0 ? 1 : value.highlight.start.line,
-                    offset: value.highlight.start.column === 0 ? 1 : value.highlight.start.column,
+                        line: value.highlight.start.line === 0 ? 1 : value.highlight.start.line,
+                        offset: value.highlight.start.column === 0 ? 1 : value.highlight.start.column,
                     },
                     rightFileEnd: {
-                    line: value.highlight.end.line === 0 ? 1 : value.highlight.end.line,
-                    offset: value.highlight.end.column === 0 ? 1 : value.highlight.end.column,
+                        line: value.highlight.end.line === 0 ? 1 : value.highlight.end.line,
+                        offset: value.highlight.end.column === 0 ? 1 : value.highlight.end.column,
                     },
                 },
             });

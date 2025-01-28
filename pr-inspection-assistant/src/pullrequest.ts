@@ -177,19 +177,17 @@ export class PullRequest {
             agent: this._httpsAgent
         });
 
+        console.info(`Request: ${requestBody}`);
+        let responseBody = await response.text();
+        console.info(`Response: ${responseBody}`);
+
         if (response.ok == false) {
             if(response.status == 401) {
                 tl.setResult(tl.TaskResult.Failed, "The Build Service must have 'Contribute to pull requests' access to the repository. See https://stackoverflow.com/a/57985733 for more information");
             }
-            else
-            {
-                console.info(`Request: ${requestBody}`);
-                let responseBody = await response.text();
-                console.info(`Response: ${responseBody}`);
-            }            
             tl.warning(`Status: ${response.statusText}`);
         }
-
+        
         return response.ok;
     }
 
