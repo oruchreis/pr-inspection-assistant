@@ -16,7 +16,6 @@ export class PullRequest {
         this._httpsAgent = new Agent({
             rejectUnauthorized: false
         });
-
         
     }
 

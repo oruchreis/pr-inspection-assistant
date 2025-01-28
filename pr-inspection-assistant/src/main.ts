@@ -49,32 +49,38 @@ export class Main {
         await this._pullRequest.CheckAuthor();
         let filesToReview = await this._repository.GetChangedFiles(fileExtensions, filesToExclude);
 
-        tl.setProgress(0, 'Performing Code Review');
-
+        tl.setProgress(0, 'Getting Diff and Existing Comments');
+        const diffByFilePath = new Map<string, any>();
         for (let index = 0; index < filesToReview.length; index++) {
-            let fileName = filesToReview[index];
-            let diff = await this._repository.GetDiff(fileName);
-
-            //console.info("Diff: \r\n" + diff);
-
-            // Get existing comments for the file
-            let existingComments = await this._pullRequest.GetCommentsForFile(fileName);
-            console.info("Existing comments: " + existingComments.length);
-
-            // Perform code review with existing comments
-            let reviewComment = await this._chatGpt.PerformCodeReview(diff, fileName, existingComments);
-
-            // Add the review comments to the pull request 
-            if (reviewComment) {
-                for (const thread of this.prepareThreads(reviewComment as any[])) {                    
-                    await this._pullRequest.AddThread(thread);
-                }
-            }
-
-            console.info(`Completed review of file ${fileName}`);
-            tl.setProgress((fileName.length / 100) * index, 'Performing Code Review');
+            let filePath = filesToReview[index];
+            const diffAndComments = {
+                diff: await this._repository.GetDiff(filePath),
+                existingComments: await this._pullRequest.GetCommentsForFile(filePath)
+            };
+            diffByFilePath.set(filePath, diffAndComments);
+            console.info(`File: ${filePath}, Diff Length: ${diffAndComments.diff.length}, Existing comments: ${diffAndComments.existingComments.length}`);
+            tl.setProgress((filesToReview.length /100) * index, 'Getting Diff and Existing Comments');
         }
+        tl.setProgress(100, 'Getting Diff and Existing Comments');
 
+        let reviewComment = await this._chatGpt.PerformCodeReview(diffByFilePath);
+        console.info(`Completed review of files`);
+        
+        if (reviewComment) {
+            tl.setProgress(0, 'Creating comments');
+            let threads = this.prepareThreads(reviewComment as any[]);
+            for (let index = 0; index < threads.length; index++){
+                let thread = threads[index];
+                await this._pullRequest.AddThread(thread);
+                tl.setProgress((threads.length /100) * index, 'Creating comments');
+            }
+            tl.setProgress(100, 'Creating comments');
+        }
+        else
+        {
+            console.info(`Nothing to review`);
+        }
+        
         tl.setResult(tl.TaskResult.Succeeded, "Pull Request reviewed.");
     }
 

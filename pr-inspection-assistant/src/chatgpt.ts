@@ -25,14 +25,14 @@ export class ChatGPT {
               }
           ]
           \`\`\`
-        - Return \`[]\` as a response if no comment is needed
-        - You will receive code changes (\`diff\`) are in Unified Diff format, which includes lines like in this regex \`@@\\s*[+-][0-9]+,[0-9]+\\s+[+-](?<new_line>[0-9]+),[0-9]+\\s*@@.\`
+        - Don't return filePath and comments if no comment is needed for file. Return \`[]\` as a response if no comment is needed at all for any file.
+        - You get \`diffByFilePath\` which includes \`filePath\` and corresponding code changes (\`diff\`) and existing comments (\`existingComments\`). Avoid duplicating similar comments.
+        - The code changes (\`diff\`) are in Unified Diff format, which includes lines like in this regex \`@@\\s*[+-][0-9]+,[0-9]+\\s+[+-](?<new_line>[0-9]+),[0-9]+\\s*@@.\`
           Use the \`new_line\` captured by the regex group \`(?<new_line>)\` to determine the starting line in the right file and calculate subsequent lines.
         - Highlight your comment in the code in specific range by using \`highlight\` which represents start and end of highlighting of your comment which calculated by \`new_line\`. 
         - Calculate highlighted \`column\` range which represents the specific range of the comment in the line.
         - Ensure all values (\`highlight.start.line\`, \`highlight.end.line\`, \`highlight.start.column\`, \`highlight.end.column\`) > 0 (minimum value: 1).
 
-        - You will also receive the file path (\`filePath\`) and existing comments (\`existingComments\`). Avoid duplicating similar comments.
         - Ignore minor issues and nitpicks.
         - Do not include teaching or unnecessary explanations.
         - Comments must be concise and in '${language}' language.
@@ -43,15 +43,10 @@ export class ChatGPT {
         - ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : ''}
         `;
 
-
-
         console.info(`System prompt:\n${this.systemMessage}`);
     }
 
-    public async PerformCodeReview(diff: string, filePath: string, existingComments: string[]): Promise<any> {
-        if (!filePath.startsWith('/')) {
-            filePath = `/${filePath}`;
-        }
+    public async PerformCodeReview(diffByFilePath: Map<string, any>): Promise<any> {        
         let model = tl.getInput('ai_model', true) as | (string & {})
             | 'o1-mini'
             | 'o1-preview'
@@ -61,15 +56,15 @@ export class ChatGPT {
             | 'gpt-3.5-turbo';
 
         let userPrompt = {
-            filePath: filePath,
-            diff: diff,
-            existingComments: existingComments
+            diffByFilePath: Array.from(diffByFilePath, ([filePath, diffAndComments]) => ({
+                filePath: filePath.startsWith("/") ? filePath : `/${filePath}`,
+                diff: diffAndComments.diff,
+                existingComments: diffAndComments.existingComments
+            }))
         };
 
         let prompt = JSON.stringify(userPrompt, null, 4);
         console.info(`Model: ${model}`);
-        // console.info(`Diff:\n${diff}`);
-        // console.info(`Prompt:\n${prompt}`);
         if (!this.doesMessageExceedTokenLimit(this.systemMessage + prompt, this.maxTokens)) {
             let openAi = await this._openAi.chat.completions.create({
                 messages: [
@@ -92,7 +87,7 @@ export class ChatGPT {
                 return JSON.parse(content);
             }
         }
-        tl.warning(`Unable to process diff for file ${filePath} as it exceeds token limits.`);
+        tl.warning(`Unable to process PR as it exceeds token limits.`);
         return {};
     }
 
